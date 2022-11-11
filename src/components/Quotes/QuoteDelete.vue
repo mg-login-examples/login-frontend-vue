@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { Quote } from "@/models/quote.model";
+import type { Quote } from "@/models/quote.model";
 
 const props = defineProps<{
   quote?: Quote;

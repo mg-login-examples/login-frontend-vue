@@ -61,9 +61,9 @@ import { ref, computed, onUnmounted, nextTick } from "vue";
 
 import { useUserStore } from "@/store/user";
 import { useWebSocketStore } from "@/store/webSocket";
-import { SocketReceiveChannelSubscriptionStatus } from "@/models/socket-receive-channel-subscription-status.model";
-import { SocketReceiveChannelMessage } from "@/models/socket-receive-channel-message.model";
-import { GroupChatMessage } from "@/models/group-chat-message.model";
+import type { SocketReceiveChannelSubscriptionStatus } from "@/models/socket-receive-channel-subscription-status.model";
+import type { SocketReceiveChannelMessage } from "@/models/socket-receive-channel-message.model";
+import type { GroupChatMessage } from "@/models/group-chat-message.model";
 
 const userStore = useUserStore();
 const webSocketStore = useWebSocketStore();

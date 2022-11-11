@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 
-import { Quote } from "@/models/quote.model";
+import type { Quote } from "@/models/quote.model";
 
 const props = defineProps<{
   quote?: Quote;

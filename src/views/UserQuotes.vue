@@ -50,7 +50,7 @@ import AppModal from "@/components/generic/modal/AppModal.vue";
 import QuoteCreateEdit from "@/components/Quotes/QuoteCreateEdit.vue";
 import QuoteDelete from "@/components/Quotes/QuoteDelete.vue";
 import { useQuotesStore } from "@/store/quotes";
-import { Quote } from "@/models/quote.model";
+import type { Quote } from "@/models/quote.model";
 
 const quotesStore = useQuotesStore();
 

@@ -42,8 +42,8 @@
 import { computed, ref, watch } from "vue";
 
 import { useUserNotesStore } from "@/store/user-notes";
-import { UserNote } from "@/models/user-note.model";
-import { UserNoteCreate } from "@/models/user-note-create.model";
+import type { UserNote } from "@/models/user-note.model";
+import type { UserNoteCreate } from "@/models/user-note-create.model";
 
 const props = defineProps<{
   activateMobileDisplay: boolean;

@@ -48,7 +48,9 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/login",
     name: "login",
     component: LoginView,
-    props: true,
+    props: (route) => ({
+      user_requested_route: route.query.user_requested_route,
+    }),
   },
   {
     path: "/signup",
@@ -59,6 +61,9 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/verify-email",
     name: "verifyEmail",
     component: VerifyEmail,
+    props: (route) => ({
+      user_requested_route: route.query.user_requested_route,
+    }),
   },
   {
     path: "/forgot-password",
@@ -85,12 +90,12 @@ export async function routerBeforeEachGuard(
     if (!userStore.user) {
       return {
         name: "login",
-        params: { user_requested_route: to.fullPath },
+        query: { user_requested_route: to.fullPath },
       };
     } else if (!userStore.user.is_verified) {
       return {
         name: "verifyEmail",
-        params: { user_requested_route: to.fullPath },
+        query: { user_requested_route: to.fullPath },
       };
     }
   }

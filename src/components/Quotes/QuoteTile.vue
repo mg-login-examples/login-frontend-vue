@@ -63,7 +63,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 
-import { Quote } from "@/models/quote.model";
+import type { Quote } from "@/models/quote.model";
 import { useUserStore } from "@/store/user";
 
 const props = defineProps<{

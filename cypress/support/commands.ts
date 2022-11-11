@@ -36,4 +36,6 @@
 //   }
 // }
 
+import "@shelex/cypress-allure-plugin";
+
 export {};

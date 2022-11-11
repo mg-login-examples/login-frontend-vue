@@ -25,8 +25,8 @@ import NotesLeftPanel from "@/components/Notes/NotesLeftPanel.vue";
 import OpenNote from "@/components/Notes/OpenNote.vue";
 import { useUserNotesStore } from "@/store/user-notes";
 import { useUserStore } from "@/store/user";
-import { UserNote } from "@/models/user-note.model";
-import { UserNoteCreate } from "@/models/user-note-create.model";
+import type { UserNote } from "@/models/user-note.model";
+import type { UserNoteCreate } from "@/models/user-note-create.model";
 
 const userStore = useUserStore();
 const userNotesStore = useUserNotesStore();
