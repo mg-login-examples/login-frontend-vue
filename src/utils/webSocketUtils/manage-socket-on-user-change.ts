@@ -5,7 +5,7 @@ export function connectDisconnectSocketOnUserLogin() {
   const userStore = useUserStore();
   const webSocketStore = useWebSocketStore();
 
-  userStore.$subscribe((a, userState) => {
+  userStore.$subscribe((_callbackMutation, userState) => {
     if (userState.user) {
       // user login or authenticate
       webSocketStore.reconnectSocket();

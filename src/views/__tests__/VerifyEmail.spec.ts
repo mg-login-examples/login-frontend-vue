@@ -273,9 +273,11 @@ describe("views > VerifyEmail.vue", () => {
     // wait for 2 seconds
     await new Promise((resolve) => setTimeout(resolve, 2000));
     // assert countdown reduced by 2 seconds
-    expect(wrapper.find(selectors.resendEmailButton).text()).toBe(
-      countdownButtonText(28)
-    );
+    expect(
+      [countdownButtonText(28), countdownButtonText(29)].includes(
+        wrapper.find(selectors.resendEmailButton).text()
+      )
+    ).toBe(true);
     // reset counter to 2 seconds to quicken countdown end
     (wrapper.vm as any).resendWaitTime = 2;
     // wait for 3 seconds

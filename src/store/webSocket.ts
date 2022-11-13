@@ -1,19 +1,13 @@
 import { defineStore } from "pinia";
-import mitt, { type Emitter } from "mitt";
 
-import {
-  getWebsocketManager,
-  type WebSocketManager,
-} from "@/utils/webSocketUtils/websocket-manager";
-import type { SocketEvents } from "@/utils/webSocketUtils/socket-event-emitter.type";
-
-const socketEventEmitter = mitt<SocketEvents>();
+import { getWebsocketManager } from "@/utils/webSocketUtils/websocket-manager";
+import type { WebSocketManager } from "@/models/websocket-manager.type";
+import type { SocketSendMessage } from "@/models/socket-send-message.model";
 
 interface WebSocketState {
   socketUrl: string;
   socketManager: WebSocketManager | null;
-  socketEventEmitter: Emitter<SocketEvents>;
-  channelSubscribeCallbacksForSocketReconnect: {
+  channelSubscribers: {
     channel: string;
     callback: () => void;
   }[];
@@ -23,36 +17,31 @@ export const useWebSocketStore = defineStore("websocket", {
   state: (): WebSocketState => ({
     socketUrl: import.meta.env.VITE_APP_BACKEND_WEBSOCKET_URL,
     socketManager: null,
-    socketEventEmitter: socketEventEmitter,
-    channelSubscribeCallbacksForSocketReconnect: [],
+    channelSubscribers: [],
   }),
   getters: {
     socketReady: (state) => state.socketManager?.socket.readyState,
+    socketEventEmitter: (state) => state.socketManager?.socketEventEmitter,
   },
   actions: {
     connectSocketIfNotConnected() {
       if (!this.socketManager) {
-        this.socketManager = getWebsocketManager(
-          this.socketUrl,
-          this.socketEventEmitter
-        );
+        this.socketManager = getWebsocketManager(this.socketUrl);
       }
     },
     disconnectSocketIfConnected() {
       if (this.socketManager) {
         this.socketManager.socket.close();
+        this.socketManager.socketEventEmitter.off("socketConnected");
         this.socketManager = null;
-        for (const item of this.channelSubscribeCallbacksForSocketReconnect) {
-          this.socketEventEmitter.off("socketConnected", item.callback);
-        }
-        this.channelSubscribeCallbacksForSocketReconnect = [];
+        this.channelSubscribers = [];
       }
     },
     reconnectSocket() {
       this.disconnectSocketIfConnected();
       this.connectSocketIfNotConnected();
     },
-    sendBySocket(payload: { action: string; channel: string; data?: object }) {
+    sendBySocket(payload: SocketSendMessage) {
       if (this.socketManager) {
         const payload_as_string = JSON.stringify(payload);
         this.socketManager.socket.send(payload_as_string);
@@ -62,19 +51,37 @@ export const useWebSocketStore = defineStore("websocket", {
       const sendSubscribeMessage = () => {
         this.sendBySocket({ action: "subscribe", channel: channelName });
       };
+      // subscribe to channel
       sendSubscribeMessage();
-      this.socketEventEmitter.on("socketConnected", sendSubscribeMessage);
-      this.channelSubscribeCallbacksForSocketReconnect.push({
+      // add callback to resubscribe to channel if socket is reconnected due to error
+      this.socketManager?.socketEventEmitter.on(
+        "socketConnected",
+        sendSubscribeMessage
+      );
+      // store callback to resubscribe to channel
+      // to be able to remove it later from event emitter when channel is unsubscribed
+      this.channelSubscribers.push({
         channel: channelName,
         callback: sendSubscribeMessage,
       });
     },
     unsubscribeFromChannel(channelName: string) {
+      // send message to unsubscribe from channel
       this.sendBySocket({ action: "unsubscribe", channel: channelName });
-      this.channelSubscribeCallbacksForSocketReconnect =
-        this.channelSubscribeCallbacksForSocketReconnect.filter(
-          (item) => item.channel !== channelName
+      // remove listener to auto subscribe to channel on websocket reconnect
+      const subscribers = this.channelSubscribers.filter(
+        (sub) => sub.channel === channelName
+      );
+      for (const sub of subscribers) {
+        this.socketManager?.socketEventEmitter.off(
+          "socketConnected",
+          sub.callback
         );
+      }
+      // remove stored callback
+      this.channelSubscribers = this.channelSubscribers.filter(
+        (item) => item.channel !== channelName
+      );
     },
     sendBySocketToChannel(channelName: string, payload: object) {
       this.sendBySocket({

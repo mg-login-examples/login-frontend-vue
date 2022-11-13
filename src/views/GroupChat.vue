@@ -8,10 +8,12 @@
             placeholder="Room"
             v-model="chatName"
             class="p-2 my-4 w-full border"
+            data-test="group-chat--room-input"
           />
           <button
             @click="requestChatRoomEntry"
             class="px-2 py-2 my-4 bg-slate-200 w-full"
+            data-test="group-chat--enter-room-button"
           >
             Enter Chat Room
           </button>
@@ -19,10 +21,17 @@
       </div>
       <div v-if="chatEntered" class="h-full flex flex-col">
         <div class="w-full flex">
-          <button class="p-2" @click="leaveChatRoom">
+          <button
+            class="p-2"
+            @click="requestChatRoomExit"
+            data-test="group-chat--leave-room-button"
+          >
             <font-awesome-icon icon="arrow-left" />
           </button>
-          <div class="grow flex justify-center p-2">
+          <div
+            class="grow flex justify-center p-2"
+            data-test="group-chat--room-name"
+          >
             {{ chatName }}
           </div>
           <div class="w-8"></div>
@@ -30,15 +39,22 @@
         <div
           class="flex flex-col flex-grow overflow-auto"
           ref="chatMessagesViewEl"
+          data-test="group-chat--chat-container"
         >
           <div
             v-for="(message, index) in chatMessages"
             :key="index"
             class="my-1 bg-slate-200 px-2 py-1 flex"
+            data-test="group-chat--message-container"
           >
-            <div>{{ message.text }}</div>
+            <div data-test="group-chat--message-text">{{ message.text }}</div>
             <div class="flex-grow"></div>
-            <div class="text-slate-500 text-right">{{ message.user }}</div>
+            <div
+              class="text-slate-500 text-right"
+              data-test="group-chat--message-user"
+            >
+              {{ message.user }}
+            </div>
           </div>
         </div>
         <input
@@ -47,8 +63,13 @@
           type="text"
           placeholder="Chat"
           class="p-2 border-2"
+          data-test="group-chat--message-input"
         />
-        <button @click="sendChatMessage" class="p-2 my-2 bg-blue-200">
+        <button
+          @click="sendChatMessage"
+          class="p-2 my-2 bg-blue-200"
+          data-test="group-chat--send-message-button"
+        >
           Send
         </button>
       </div>
@@ -76,43 +97,47 @@ const chatMessages = ref<GroupChatMessage[]>([]);
 const messageToSendText = ref("");
 const chatMessagesViewEl = ref<HTMLElement>();
 
-// setup listener to handle channel subscription success / failure
-webSocketStore.socketEventEmitter.on(
+// setup listener to handle chat room subscription success / failure
+webSocketStore.socketEventEmitter?.on(
   "channelSubscriptionStatus",
-  (channelSubscription: SocketReceiveChannelSubscriptionStatus) => {
-    if (channelSubscription.channel === roomChannelName.value) {
-      chatEntered.value = channelSubscription.subscribed;
-      if (!channelSubscription.subscribed) {
-        webSocketStore.socketEventEmitter.off(
-          "channelMessage",
-          handleChatRoomIncommingMessages
-        );
+  (chatRoomSubscription: SocketReceiveChannelSubscriptionStatus) => {
+    if (chatRoomSubscription.channel === roomChannelName.value) {
+      if (chatRoomSubscription.subscribed) {
+        enterChatRoom();
+      } else {
+        exitChatRoom();
       }
     }
   }
 );
 function requestChatRoomEntry() {
   if (chatName.value) {
-    // setup listener to handle incomming channel messages
-    webSocketStore.socketEventEmitter.on(
-      "channelMessage",
-      handleChatRoomIncommingMessages
-    );
-    // subscribe to receive messages from chat room
+    // send subscribe request to receive messages from chat room
     webSocketStore.subscribeToChannel(roomChannelName.value);
   }
 }
-function leaveChatRoom() {
-  webSocketStore.unsubscribeFromChannel(roomChannelName.value);
-  chatEntered.value = false;
-  webSocketStore.socketEventEmitter.off(
+function enterChatRoom() {
+  chatEntered.value = true;
+  // start listening to incomming chat room messages
+  webSocketStore.socketEventEmitter?.on(
     "channelMessage",
     handleChatRoomIncommingMessages
   );
+}
+function requestChatRoomExit() {
+  webSocketStore.unsubscribeFromChannel(roomChannelName.value);
+}
+function exitChatRoom() {
+  chatEntered.value = false;
   chatName.value = "";
+  // stop listening to incomming chat room messages
+  webSocketStore.socketEventEmitter?.off(
+    "channelMessage",
+    handleChatRoomIncommingMessages
+  );
 }
 function sendChatMessage() {
-  if (webSocketStore.socketReady && userStore.user && messageToSendText.value) {
+  if (messageToSendText.value) {
     webSocketStore.sendBySocketToChannel(roomChannelName.value, {
       text: messageToSendText.value,
     });
@@ -135,6 +160,12 @@ function handleChatRoomIncommingMessages(
 }
 
 onUnmounted(() => {
-  leaveChatRoom();
+  // send websocket message to unsubscribe from chat channel
+  webSocketStore.unsubscribeFromChannel(roomChannelName.value);
+  // unsubscribe from event emitter
+  webSocketStore.socketEventEmitter?.off(
+    "channelMessage",
+    handleChatRoomIncommingMessages
+  );
 });
 </script>
