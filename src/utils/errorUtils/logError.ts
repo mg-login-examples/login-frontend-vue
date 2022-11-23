@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import { isDevelopmentEnvironment } from "@/utils/envUtils";
+import { EnvironmentVars } from "@/utils/envUtils";
 
 const logError = (error: unknown) => {
-  if (isDevelopmentEnvironment()) {
+  if (EnvironmentVars.isDevelopmentEnvironment) {
     if (error instanceof Error) {
       console.log("Error message: ", error.message);
     }

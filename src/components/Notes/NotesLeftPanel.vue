@@ -9,7 +9,11 @@
       data-test="notes--notes-list--collapsed-row"
       class="px-2 bg-slate-400"
     >
-      <button @click="toggleShowListOfUserNotes" class="hover:bg-slate-500 p-2">
+      <button
+        @click="toggleShowListOfUserNotes"
+        class="hover:bg-slate-500 p-2"
+        data-test="notes--notes-list--show-notes"
+      >
         <font-awesome-icon :icon="['far', 'rectangle-list']" />
       </button>
     </div>
@@ -20,7 +24,11 @@
     >
       <div class="flex">
         <span class="px-4 p-2 flex-grow font-bold">My Notes</span>
-        <button @click="openNewUserNote" class="p-2 hover:bg-slate-300">
+        <button
+          @click="openNewUserNote"
+          class="p-2 hover:bg-slate-300"
+          data-test="notes--notes-list--create-note-button"
+        >
           <font-awesome-icon icon="plus" />
         </button>
       </div>
@@ -29,6 +37,7 @@
         :key="userNote.id"
         @click="openUserNote(userNote.id)"
         class="px-4 py-1 cursor-pointer hover:bg-slate-300"
+        data-test="notes--notes-list-note-item"
       >
         {{ userNote.title }}
       </div>

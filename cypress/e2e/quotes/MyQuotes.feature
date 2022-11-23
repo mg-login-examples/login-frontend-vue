@@ -1,4 +1,4 @@
-@quote-feature
+@quotes-feature
 Feature: My Quotes
 
   Scenario: View my quotes when logged in

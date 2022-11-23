@@ -22,11 +22,21 @@ const RandomValueStore = {
   "random > all quotes > unlike quote": minifaker
     .array(6, () => minifaker.word())
     .join(" "),
+  "random > user notes > create note": minifaker
+    .array(3, () => minifaker.word())
+    .join(" "),
+  "random > user notes > edit note": minifaker
+    .array(4, () => minifaker.word())
+    .join(" "),
 };
 
 const WebpageValueStore = {
   "webpage > all quotes > like quote": undefined,
   "webpage > all quotes > unlike quote": undefined,
+  "webpage > user notes > view note 1": undefined,
+  "webpage > user notes > view note 2": undefined,
+  "webpage > user notes > edit note 1": undefined,
+  "webpage > user notes > edit note 2": undefined,
 };
 
 const ExternalValueStore = {

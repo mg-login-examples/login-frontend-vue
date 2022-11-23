@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { getWebsocketManager } from "@/utils/webSocketUtils/websocket-manager";
 import type { WebSocketManager } from "@/models/websocket-manager.type";
 import type { SocketSendMessage } from "@/models/socket-send-message.model";
+import { EnvironmentVars } from "@/utils/envUtils";
 
 interface WebSocketState {
   socketUrl: string;
@@ -15,7 +16,7 @@ interface WebSocketState {
 
 export const useWebSocketStore = defineStore("websocket", {
   state: (): WebSocketState => ({
-    socketUrl: import.meta.env.VITE_APP_BACKEND_WEBSOCKET_URL,
+    socketUrl: EnvironmentVars.backendWebSocketUrl,
     socketManager: null,
     channelSubscribers: [],
   }),

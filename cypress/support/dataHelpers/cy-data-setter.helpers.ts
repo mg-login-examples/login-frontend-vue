@@ -31,4 +31,19 @@ export default class CyDataSetterHelpers {
       timeout: 10000,
     });
   }
+
+  static create2UserNotesIfAtLeast2NotesDoNotExists(
+    email: string,
+    password: string
+  ) {
+    cy.wrap(
+      DataSetterHelpers.create2UserNotesIfAtLeast2NotesDoNotExists(
+        email,
+        password
+      ),
+      {
+        timeout: 10000,
+      }
+    );
+  }
 }

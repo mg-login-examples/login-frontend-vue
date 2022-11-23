@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import logError from "@/utils/errorUtils/logError";
 console.log = vi.fn();
 
-import.meta.env.VITE_APP_ENV = "development";
+import.meta.env.VITE_APP_ENV = true;
 
 describe("logError", () => {
   beforeEach(() => {

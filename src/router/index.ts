@@ -12,6 +12,7 @@ import SignupView from "@/views/SignupView.vue";
 import VerifyEmail from "@/views/VerifyEmail.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
 import { useUserStore } from "@/store/user";
+import { EnvironmentVars } from "@/utils/envUtils";
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -73,7 +74,7 @@ export const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(EnvironmentVars.baseUrl),
   routes,
 });
 

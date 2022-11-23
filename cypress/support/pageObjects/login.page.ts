@@ -1,6 +1,7 @@
 export default class LoginPage {
   static readonly urlPath = "/login";
 
+  static readonly pageLoading = "[data-test='app--connecting']";
   static readonly loginUserEmailInput = "[data-test='login--user-email-input']";
   static readonly loginUserPasswordInput =
     "[data-test='login--user-password-input']";
@@ -17,7 +18,7 @@ export default class LoginPage {
   }
 
   static assertIsOpen() {
-    // cy.url().should("eq", Cypress.config().baseUrl + this.urlPath);
+    cy.get(this.pageLoading).should("not.exist");
     cy.url().should("include", Cypress.config().baseUrl + this.urlPath);
   }
 

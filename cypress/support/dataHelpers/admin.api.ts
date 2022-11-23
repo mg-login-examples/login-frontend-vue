@@ -13,6 +13,7 @@ export default class AdminAPI {
   static getQuotesUrl = `${this.admin_api_base_url}/resource/quotes/`;
   static createUserUrl = `${this.admin_api_base_url}/resource/users/`;
   static createQuoteUrl = `${this.admin_api_base_url}/resource/quotes/`;
+  static createUserNoteUrl = `${this.admin_api_base_url}/resource/user-notes/`;
 
   static getUserByIdUrl(userId: number) {
     return `${this.admin_api_base_url}/resource/users/${userId}/`;
@@ -118,6 +119,28 @@ export default class AdminAPI {
         data: {
           text: quoteText,
           author: author,
+        },
+        headers: {
+          "Admin-Authorization": `${this.admin_api_access_token_header}`,
+        },
+      })
+    ).data;
+  }
+
+  static async createUserNote(
+    noteTitle: string,
+    noteText: string,
+    user_id: number
+  ) {
+    await this.setAdminAPIAccessToken();
+    return (
+      await axios({
+        method: "POST",
+        url: this.createUserNoteUrl,
+        data: {
+          title: noteTitle,
+          text: noteText,
+          user_id: user_id,
         },
         headers: {
           "Admin-Authorization": `${this.admin_api_access_token_header}`,

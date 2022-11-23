@@ -56,6 +56,29 @@ export default class DataSetterHelpers {
     }
   }
 
+  static async getUserNotes(email: string, password: string) {
+    return await UserAPI.getUserNotes(email, password);
+  }
+
+  static async create2UserNotesIfAtLeast2NotesDoNotExists(
+    email: string,
+    password: string
+  ) {
+    const user = await this.createUserIfNoUserExists(email, password);
+    if ((await this.getUserNotes(email, password)).length < 2) {
+      await AdminAPI.createUserNote(
+        "E2E generated note 1",
+        "my drafted quotes\nsome other content",
+        user.id
+      );
+      await AdminAPI.createUserNote(
+        "E2E generated note 2",
+        "some stuff about some things",
+        user.id
+      );
+    }
+  }
+
   static async assertLoginInvalid(email: string, password: string) {
     try {
       await UserAPI.login(email, password);

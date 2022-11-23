@@ -1,7 +1,8 @@
 import axios, { type AxiosInstance } from "axios";
+import { EnvironmentVars } from "@/utils/envUtils"; 
 
 const http: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_BACKEND_URL,
+  baseURL: EnvironmentVars.backendUrl,
   withCredentials: true,
 });
 

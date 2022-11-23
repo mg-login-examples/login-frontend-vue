@@ -1,6 +1,7 @@
 import type { User } from "@/models/user.model";
 import type { UserCreate } from "@/models/user-create.model";
 import type { LoginResponse } from "@/models/login-response.model";
+import { EnvironmentVars } from "@/utils/envUtils"; 
 import http from "./base";
 
 const usersAPI = {
@@ -17,7 +18,7 @@ const usersAPI = {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
     const loginResponse: LoginResponse = <LoginResponse>response.data;
-    if (import.meta.env.VITE_APP_ADD_AUTHORIZATION_HEADER === "true") {
+    if (EnvironmentVars.addAuthorizationHeader) {
       http.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${loginResponse.access_token}`;
@@ -34,7 +35,7 @@ const usersAPI = {
   async createUser(userCreate: UserCreate): Promise<User> {
     const response = await http.post(`/api/users/`, userCreate);
     const loginResponse: LoginResponse = <LoginResponse>response.data;
-    if (import.meta.env.VITE_APP_ADD_AUTHORIZATION_HEADER === "true") {
+    if (EnvironmentVars.addAuthorizationHeader) {
       http.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${loginResponse.access_token}`;

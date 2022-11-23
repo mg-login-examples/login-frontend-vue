@@ -1,6 +1,7 @@
 export default class MyQuotesPage {
   static readonly urlPath = "/my-quotes";
 
+  static readonly pageLoading = "[data-test='app--connecting']";
   static readonly openCreateQuoteModalButton =
     "[data-test='user-quote--open-create-quote-modal-button']";
   static readonly quoteTile = "[data-test='quote-tile']";
@@ -15,6 +16,7 @@ export default class MyQuotesPage {
   }
 
   static assertIsOpen() {
+    cy.get(this.pageLoading).should("not.exist");
     cy.url().should("eq", Cypress.config().baseUrl + this.urlPath);
   }
 

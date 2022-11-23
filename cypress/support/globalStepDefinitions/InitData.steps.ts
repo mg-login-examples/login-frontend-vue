@@ -44,3 +44,13 @@ Given(
     CyDataSetterHelpers.createUserQuoteIfNoQuoteExists(email, password);
   }
 );
+
+Given(
+  "user with email {string} and password {string} has at least 2 notes",
+  (email: string, password: string) => {
+    CyDataSetterHelpers.create2UserNotesIfAtLeast2NotesDoNotExists(
+      email,
+      password
+    );
+  }
+);

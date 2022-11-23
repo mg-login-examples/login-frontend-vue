@@ -3,6 +3,7 @@ import { setValueInStore } from "../testDataStore/store";
 export default class AllQuotesPage {
   static readonly urlPath = "/";
 
+  static readonly pageLoading = "[data-test='app--connecting']";
   static readonly quoteTile = "[data-test='quote-tile']";
   static readonly quoteText = "[data-test='quote-tile--text']";
   static readonly likeQuoteButton =
@@ -15,6 +16,7 @@ export default class AllQuotesPage {
   }
 
   static assertIsOpen() {
+    cy.get(this.pageLoading).should("not.exist");
     cy.url().should("eq", Cypress.config().baseUrl + this.urlPath);
   }
 
@@ -45,9 +47,6 @@ export default class AllQuotesPage {
       .filter(`:not(:has(${this.unlikeQuoteButton}))`)
       .find(this.quoteText)
       .then((jqueryEl) => {
-        cy.log("1231231231232");
-        cy.log(storeKey, jqueryEl[0].innerText);
-        cy.log("1231231231232");
         setValueInStore(storeKey, jqueryEl[0].innerText);
       });
   }

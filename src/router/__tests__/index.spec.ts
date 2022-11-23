@@ -6,6 +6,7 @@ import { createTestingPinia } from "@pinia/testing";
 import App from "@/App.vue";
 import { routes, routerBeforeEachGuard } from "@/router";
 import { useUserStore } from "@/store/user";
+import { EnvironmentVars } from "@/utils/envUtils";
 import { getMockRoutes } from "./mock-routes";
 import MockAllQuotes from "./mockViews/AllQuotes.vue";
 import MockUserQuotes from "./mockViews/UserQuotes.vue";
@@ -38,7 +39,7 @@ describe("App", () => {
   it("renders All Quotes component via routing", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -60,7 +61,7 @@ describe("App", () => {
   it("renders Login component via routing", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -82,7 +83,7 @@ describe("App", () => {
   it("renders Signup component via routing", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -104,7 +105,7 @@ describe("App", () => {
   it("renders VerifyEmail component via routing", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -126,7 +127,7 @@ describe("App", () => {
   it("renders ForgotPassword component via routing", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -148,7 +149,7 @@ describe("App", () => {
   it("redirects to Login when routing to User Quotes view if not logged in", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -178,7 +179,7 @@ describe("App", () => {
   it("redirects to VerifyEmail when routing to User Quotes view if logged in but email not verified", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -208,7 +209,7 @@ describe("App", () => {
   it("renders User Quotes when routing to User Quotes view if logged in", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -232,7 +233,7 @@ describe("App", () => {
   it("renders User Notes when routing User Notes view if logged in", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);
@@ -256,7 +257,7 @@ describe("App", () => {
   it("renders Group Chat when routing User Notes view if logged in", async () => {
     // create router with same configuration and guard as actual router, except with mock components attached to each router
     const router = createRouter({
-      history: createWebHistory(import.meta.env.BASE_URL),
+      history: createWebHistory(EnvironmentVars.baseUrl),
       routes: mockRoutes,
     });
     router.beforeEach(routerBeforeEachGuard);

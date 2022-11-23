@@ -30,6 +30,7 @@
         <button
           @click="saveUserNote"
           class="p-2 bg-blue-300 flex justify-center"
+          data-test="notes--open-note--save-note-button"
         >
           SAVE
         </button>

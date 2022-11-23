@@ -1,6 +1,7 @@
 export default class SignupPage {
   static readonly urlPath = "/signup";
 
+  static readonly pageLoading = "[data-test='app--connecting']";
   static readonly signupUserEmailInput =
     "[data-test='signup--user-email-input']";
   static readonly signupUserPasswordInput =
@@ -18,6 +19,7 @@ export default class SignupPage {
   }
 
   static assertIsOpen() {
+    cy.get(this.pageLoading).should("not.exist");
     cy.url().should("eq", Cypress.config().baseUrl + this.urlPath);
   }
 

@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
 
-import { isDevelopmentEnvironment } from "@/utils/envUtils";
+import { EnvironmentVars } from "@/utils/envUtils";
 
 describe("Utils > envUtils > index.ts", () => {
   it("checks development environment", () => {
-    import.meta.env.VITE_APP_ENV = "production";
-    expect(isDevelopmentEnvironment()).toBe(false);
-    import.meta.env.VITE_APP_ENV = "development";
-    expect(isDevelopmentEnvironment()).toBe(true);
+    import.meta.env.DEV = false;
+    expect(EnvironmentVars.isDevelopmentEnvironment).toBe(false);
+    import.meta.env.DEV = true;
+    expect(EnvironmentVars.isDevelopmentEnvironment).toBe(true);
   });
 });
