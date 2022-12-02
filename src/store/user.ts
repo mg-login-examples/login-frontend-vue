@@ -21,12 +21,13 @@ export const useUserStore = defineStore("user", {
       rememberMe: boolean
     ): Promise<boolean> {
       try {
-        this.user = await backendApi.users.login(
-          userEmail,
-          userPassword,
-          rememberMe
-        );
-        return true;
+        await backendApi.users.login(userEmail, userPassword, rememberMe);
+        // following authentication is made to check if cookies have been set
+        if (await this.authenticate()) {
+          return true;
+        } else {
+          return false;
+        }
       } catch (error) {
         const errorStore = useErrorsStore();
         errorStore.handleError(error);

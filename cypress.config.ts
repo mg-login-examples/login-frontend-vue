@@ -19,14 +19,14 @@ async function setupNodeEvents(
     })
   );
 
-  on("before:browser:launch", (browser, launchOptions) => {
-    if (browser.family === "chromium") {
-      launchOptions.args.push(
-        "--disable-features=CookiesWithoutSameSiteMustBeSecure"
-      );
-    }
-    return launchOptions;
-  });
+  // on("before:browser:launch", (browser, launchOptions) => {
+  //   if (browser.family === "chromium") {
+  //     launchOptions.args.push(
+  //       "--disable-features=CookiesWithoutSameSiteMustBeSecure"
+  //     );
+  //   }
+  //   return launchOptions;
+  // });
 
   allureWriter(on, config);
 
@@ -45,12 +45,12 @@ export default defineConfig({
     allure: true,
     allureResultsPath: "cypress/allure-results",
     MAILSLURP_API_KEY: secrets.mailslurp_api_key,
-    adminApiUrl: "http://localhost:8018/api/admin",
     apiUrl: "http://localhost:8018/api",
+    adminApiUrl: "http://localhost:8018/api/admin",
     adminApiLoginUsername: "admin@admin.admin",
     adminApiLoginPassword: "admin",
     filterSpecs: true,
-    tags: "@signup",
+    // tags: "@logout",
   },
   video: false,
   // videoCompression: false,

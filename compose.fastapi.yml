@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  fastapi:
+    restart: always
+    tty: true # enables colored log # docker run -t
+    stdin_open: false # enables colored log # docker run -i
+    build:
+      context: ./backend/src/
+    networks:
+      - backend
+      - fullstack_proxy
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+      mongo_db:
+        condition: service_healthy
+      redis_cache:
+        condition: service_healthy
+    ports:
+      - ${API_SERVER_PORT:-8018}:${SERVER_PORT:-8018}
+    volumes:
+      - ./backend/src:/app
+      - ./backend/app.log:/app.log
+    secrets:
+      - mysql-password
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-mysql://root@mysql_db/login}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - MONGO_HOST=${MONGO_HOST-mongo_db}
+      - MONGO_PORT=27017
+      - MONGO_USERNAME=${MONGO_USERNAME-root_user}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - USE_IN_MEMORY_MONGO_DB=False
+      - SESSION_TOKEN_STORE_TYPE=${SESSION_TOKEN_STORE_TYPE:-redis}
+      - REDIS_URL=${REDIS_URL:-redis://redis_cache}
+      # - REDIS_USER=${REDIS_USER}
+      # - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - BROADCAST_URL=${BROADCAST_URL:-redis://redis_cache}
+      - TEST_REDIS_CONNECTION_ON_APP_START=True
+      - CORS_ORIGINS_SET=${CORS_ORIGINS_SET:-Development}
+      - USER_AUTH_COOKIE_TYPE=${USER_AUTH_COOKIE_TYPE:-localhost_development}
+      - ADMIN_USER_AUTH_COOKIE_TYPE=${ADMIN_USER_AUTH_COOKIE_TYPE:-localhost_development}
+      - RELOAD_APP_ON_CHANGE=${RELOAD_APP_ON_CHANGE-True}
+      - LOG_TO_FILE=${LOG_TO_FILE:-True}
+      - LOG_ENV_VARS_ON_APP_START=${LOG_ENV_VARS_ON_APP_START:-True}
+      - TEST_ADMIN_USER_EMAIL=${TEST_ADMIN_USER_EMAIL}
+      - TEST_ADMIN_USER_PASSWORD=${TEST_ADMIN_USER_PASSWORD}
+    healthcheck:
+      test: wget --no-verbose --tries=1 -O /dev/null http://localhost:8018/docs
+      timeout: 20s
+      retries: 10
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.25'
+    #       memory: 256M
+    #     reservations:
+    #       cpus: '0.25'
+    #       memory: 128M

@@ -1,0 +1,7 @@
+version: '3.8'
+
+networks:
+  backend:
+  fullstack_proxy:
+  traefik-public:
+    name: traefik-public
