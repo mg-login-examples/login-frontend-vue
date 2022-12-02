@@ -6,9 +6,10 @@ export const EnvironmentVars = {
   backendWebSocketUrl: import.meta.env.VITE_APP_BACKEND_WEBSOCKET_URL,
   addAuthorizationHeader:
     import.meta.env.VITE_APP_ADD_AUTHORIZATION_HEADER === "true" ? true : false,
+  logEnvVars: import.meta.env.VITE_LOG_ENV_VARS === "true" ? true : false,
 };
 
-if (import.meta.env.DEV) {
+if (import.meta.env.DEV && EnvironmentVars.logEnvVars) {
   console.log("*********** ENVIRONMENT VARIABLES START ************");
   for (const key in EnvironmentVars) {
     console.log(key, " = ", (EnvironmentVars as any)[key]);
