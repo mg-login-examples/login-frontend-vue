@@ -39,6 +39,7 @@ describe("store > user.ts", () => {
   it("logs in user with email and password", async () => {
     // mock login api to return user
     mockBackendApiLogin.mockReturnValue(fakeUser);
+    mockBackendApiAuthenticate.mockReturnValue(fakeUser);
     // init user store
     const userStore = useUserStore();
     expect(userStore.user).toBeNull();
@@ -56,6 +57,8 @@ describe("store > user.ts", () => {
       fakeUserLogin.password,
       false
     );
+    // assert api authenticate function called
+    expect(mockBackendApiAuthenticate).toHaveBeenCalled();
     // assert user returned
     expect(userStore.user).toStrictEqual(fakeUser);
   });

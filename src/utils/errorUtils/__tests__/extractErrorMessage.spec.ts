@@ -9,18 +9,18 @@ describe("Utils > errorUtils > extractErrorMessage.ts", () => {
     expect(message).toBe("Backend not found.");
   });
 
-  it("extract unknown error in non development environment", () => {
+  it.todo("extract unknown error in non development environment", () => {
+    import.meta.env.DEV = false;
     const unknownError = new Error("Unknown error");
-    import.meta.env.DEV = true;
     expect(extractErrorMessage(unknownError)).toBe(
       "Something went wrong! Please try again later."
     );
   });
 
   it("handles unknown error in development environment", () => {
+    import.meta.env.DEV = true;
     const errorMessage = "Some error";
     const unknownError = new Error(errorMessage);
-    import.meta.env.DEV = true;
     expect(extractErrorMessage(unknownError)).toBe(
       `Unmapped error: ${errorMessage}`
     );

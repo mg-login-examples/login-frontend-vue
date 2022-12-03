@@ -1,5 +1,6 @@
 import type { WebSocketManager } from "@/models/websocket-manager.type";
 import { getSocket } from "./socket";
+import { EnvironmentVars } from "@/utils/envUtils";
 
 export function socketReconnectOnUnexpectedClose(
   webSocketManager: WebSocketManager,
@@ -9,9 +10,11 @@ export function socketReconnectOnUnexpectedClose(
   socket.onclose = function (ev) {
     if (ev.code === 1006 || !ev.wasClean) {
       webSocketManager.socketEventEmitter.emit("socketDisconnected");
-      console.log(
-        "Websocket closed unexpectedly. Trying to reconnect in 1 sec..."
-      );
+      if (EnvironmentVars.isDevelopmentEnvironment) {
+        console.log(
+          "Websocket closed unexpectedly. Trying to reconnect in 1 sec..."
+        );
+      }
       setTimeout(function () {
         const newSocket = getSocket(
           webSocketUrl,

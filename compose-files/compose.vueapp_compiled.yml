@@ -14,7 +14,6 @@ services:
     restart: always
     volumes:
       - ./src:/app/src
-      - ./tests:/app/tests
     ports:
       - 8019:5173
     networks:
