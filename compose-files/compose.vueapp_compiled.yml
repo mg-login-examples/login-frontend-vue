@@ -10,7 +10,7 @@ services:
         VITE_APP_BACKEND_WEBSOCKET_URL: ${VITE_APP_BACKEND_WEBSOCKET_URL}
         VITE_LOG_ENV_VARS: ${VITE_LOG_ENV_VARS}
     environment:
-      - VITE_LOG_ENV_VARS=${VITE_LOG_ENV_VARS-false}
+      - VITE_LOG_ENV_VARS=${VITE_LOG_ENV_VARS-false} # Pass env directly to container for unit tests
     restart: always
     volumes:
       - ./src:/app/src

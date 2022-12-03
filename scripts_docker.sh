@@ -39,7 +39,7 @@ then
    # set full app proxy env vars for nginx config for e2e test
    export NGINX_FILENAME=nginx-e2e-test.conf
    # build frontend and cypress containers
-   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.full_app_proxy.yml -f compose-files/compose.cypress.yml -p frontend build
+   docker-compose -f docker-compose.yml -f compose-files/compose.cypress.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend build
    # set env vars for tests execution
    # set auth cookie type for e2e docker tests
    export USER_AUTH_COOKIE_TYPE=same_site_not_secure

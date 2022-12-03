@@ -28,8 +28,15 @@ export class EnvironmentVars {
 
 if (import.meta.env.DEV && EnvironmentVars.logEnvVars) {
   console.log("*********** ENVIRONMENT VARIABLES START ************");
-  for (const key in EnvironmentVars) {
-    console.log(key, " = ", (EnvironmentVars as any)[key]);
-  }
+  console.log(
+    `isDevelopmentEnvironment=${EnvironmentVars.isDevelopmentEnvironment}`
+  );
+  console.log(`baseUrl=${EnvironmentVars.baseUrl}`);
+  console.log(`backendUrl=${EnvironmentVars.backendUrl}`);
+  console.log(`backendWebSocketUrl=${EnvironmentVars.backendWebSocketUrl}`);
+  console.log(
+    `addAuthorizationHeader=${EnvironmentVars.addAuthorizationHeader}`
+  );
+  console.log(`logEnvVars=${EnvironmentVars.logEnvVars}`);
   console.log("*********** ENVIRONMENT VARIABLES END ************");
 }
