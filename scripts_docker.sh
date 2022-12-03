@@ -57,16 +57,14 @@ then
    docker-compose -f docker-compose.yml -f compose-files/compose.cypress.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend run vueapp_test_e2e npm run test:e2e:dev:run:docker
 elif [ $case = "launch-frontend-cloud-dev" ]
 then
+   # stop vue service only
    docker_down_all_frontend_containers
-   touch backend/app.log
    export PRIMARY_DOMAIN="login-example.duckdns.org"
    export VITE_MODE="cloud_development"
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
 elif [ $case = "launch-frontend-prod" ]
 then
    docker_down_all_frontend_containers
-   # Stop all frontend project's containers, build vueapp container and run unit tests
-   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -p frontend build
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
 elif [ $case = "launch-fullstack-local" ]
 then

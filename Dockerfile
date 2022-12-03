@@ -28,7 +28,7 @@ CMD [ "npm", "run", "dev" ]
 # build stage
 FROM install-stage as build-stage
 ARG VITE_MODE=production
-RUN npx vite build --mode VITE_MODE
+RUN npx vite build --mode $VITE_MODE
 
 # production stage
 FROM nginx:stable-alpine as serve-static-stage

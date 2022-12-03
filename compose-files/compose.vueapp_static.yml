@@ -6,7 +6,10 @@ services:
       context: .
       target: serve-static-stage
       args:
-        VITE_MODE: ${VITE_MODE:-production}
+        VITE_MODE: ${VITE_MODE}
+        VITE_APP_BACKEND_URL: ${VITE_APP_BACKEND_URL}
+        VITE_APP_BACKEND_WEBSOCKET_URL: ${VITE_APP_BACKEND_WEBSOCKET_URL}
+        VITE_LOG_ENV_VARS: ${VITE_LOG_ENV_VARS}
     ports:
       - 8010:80
     networks:
