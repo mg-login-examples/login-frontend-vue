@@ -24,3 +24,5 @@ services:
       interval: 60s
       timeout: 10s
       retries: 10
+    logging:
+      driver: none 

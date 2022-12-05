@@ -8,8 +8,40 @@ case=${1:-default}
 if [ $case = "launch-frontend-local" ]
 then
    docker_down_all_frontend_containers
-   export VITE_LOG_ENV_VARS=true
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -p frontend up --build
+elif [ $case = "launch-frontend-prod" ]
+then
+   docker_down_all_frontend_containers
+   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
+elif [ $case = "launch-fullstack-local" ]
+then
+   docker_down_all_frontend_containers
+   # Ensure app.log file is created otherwise docker creates app.log directory by default as it is mounted
+   touch backend/app.log
+   # Define test admin users
+   BACKEND_ADMIN_USER_EMAIL="admin@admin.admin"
+   BACKEND_ADMIN_USER_PASSWORD="admin"
+   # build backend stack images, run db migrations and create test admin users
+   build_backend_stack_docker_images && run_db_migrations && create_admin_users $BACKEND_ADMIN_USER_EMAIL $BACKEND_ADMIN_USER_PASSWORD
+   # launch app
+   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -p frontend up --build
+elif [ $case = "launch-fullstack-local-with-proxy" ]
+then
+   docker_down_all_frontend_containers
+   # Ensure app.log file is created otherwise docker creates app.log directory by default as it is mounted
+   touch backend/app.log
+   # Define test admin users
+   BACKEND_ADMIN_USER_EMAIL="admin@admin.admin"
+   BACKEND_ADMIN_USER_PASSWORD="admin"
+   # build backend stack images, run db migrations and create test admin users
+   build_backend_stack_docker_images && run_db_migrations && create_admin_users $BACKEND_ADMIN_USER_EMAIL $BACKEND_ADMIN_USER_PASSWORD
+   # set env vars
+   # set auth cookie type for e2e docker tests
+   export USER_AUTH_COOKIE_TYPE=same_site_not_secure
+   export VITE_APP_BACKEND_URL=http://backend.login.com:8030
+   export VITE_APP_BACKEND_WEBSOCKET_URL=ws://backend.login.com:8030/ws/main
+   # launch app
+   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend up --build
 elif [ $case = "launch-tdd" ]
 then
    docker_down_all_frontend_containers
@@ -45,14 +77,14 @@ then
    export USER_AUTH_COOKIE_TYPE=same_site_not_secure
    # set cypress env vars
    export CYPRESS_BASE_URL=http://frontend.full_app_proxy.com
-   export CYPRESS_VIDEO=false
+   export CYPRESS_VIDEO=true
    # export CYPRESS_TAGS=@notes-feature
    export CYPRESS_VERIFY_TIMEOUT=100000 # Enable when running script locally and system is slow
    export CYPRESS_apiUrl=http://backend.full_app_proxy.com/api
    export CYPRESS_adminApiUrl=http://backend.full_app_proxy.com/api/admin
    export CYPRESS_adminApiLoginUsername=$BACKEND_ADMIN_USER_EMAIL
    export CYPRESS_adminApiLoginPassword=$BACKEND_ADMIN_USER_PASSWORD
-   # export CYPRESS_TAGS=@tag1,@tag2
+   # export CYPRESS_TAGS=@tag1,@tag2 # example with multiple tags
    # run e2e tests
    docker-compose -f docker-compose.yml -f compose-files/compose.cypress.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend run vueapp_test_e2e npm run test:e2e:dev:run:docker
 elif [ $case = "launch-frontend-cloud-dev" ]
@@ -61,42 +93,7 @@ then
    docker_down_all_frontend_containers
    export PRIMARY_DOMAIN="login-example.duckdns.org"
    export VITE_MODE="cloud_development"
-   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
-elif [ $case = "launch-frontend-prod" ]
-then
-   docker_down_all_frontend_containers
-   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
-elif [ $case = "launch-fullstack-local" ]
-then
-   docker_down_all_frontend_containers
-   # Ensure app.log file is created otherwise docker creates app.log directory by default as it is mounted
-   touch backend/app.log
-   # Define test admin users
-   BACKEND_ADMIN_USER_EMAIL="admin@admin.admin"
-   BACKEND_ADMIN_USER_PASSWORD="admin"
-   # build backend stack images, run db migrations and create test admin users
-   build_backend_stack_docker_images && run_db_migrations && create_admin_users $BACKEND_ADMIN_USER_EMAIL $BACKEND_ADMIN_USER_PASSWORD
-   # launch app
-   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -p frontend up --build
-elif [ $case = "launch-fullstack-local-with-proxy" ]
-then
-   docker_down_all_frontend_containers
-   # Ensure app.log file is created otherwise docker creates app.log directory by default as it is mounted
-   touch backend/app.log
-   # Define test admin users
-   BACKEND_ADMIN_USER_EMAIL="admin@admin.admin"
-   BACKEND_ADMIN_USER_PASSWORD="admin"
-   # build backend stack images, run db migrations and create test admin users
-   build_backend_stack_docker_images && run_db_migrations && create_admin_users $BACKEND_ADMIN_USER_EMAIL $BACKEND_ADMIN_USER_PASSWORD
-   # # delete containers to prevent duplicate network errors
-   # docker_down_all_frontend_containers
-   # set env vars
-   # set auth cookie type for e2e docker tests
-   export USER_AUTH_COOKIE_TYPE=same_site_not_secure
-   export VITE_APP_BACKEND_URL=http://backend.login.com:8030
-   export VITE_APP_BACKEND_WEBSOCKET_URL=ws://backend.login.com:8030/ws/main
-   # launch app
-   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend up --build
+   docker-compose -f docker-compose.yml -f docker-compose.override.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
 elif [ $case = "launch-databases" ]
 then
    docker_down_all_frontend_containers
@@ -104,8 +101,6 @@ then
 elif [ $case = "down" ]
 then
    docker_down_all_frontend_containers
-   # Stop all backend project's containers
-   # docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.vueapp_static.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.cypress.yml -p frontend down
 else
    echo "no option passed"
    echo "available options are:
