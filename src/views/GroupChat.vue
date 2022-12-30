@@ -80,13 +80,11 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted, nextTick } from "vue";
 
-import { useUserStore } from "@/store/user";
 import { useWebSocketStore } from "@/store/webSocket";
 import type { SocketReceiveChannelSubscriptionStatus } from "@/models/socket-receive-channel-subscription-status.model";
 import type { SocketReceiveChannelMessage } from "@/models/socket-receive-channel-message.model";
 import type { GroupChatMessage } from "@/models/group-chat-message.model";
 
-const userStore = useUserStore();
 const webSocketStore = useWebSocketStore();
 
 const chatName = ref("");
@@ -118,10 +116,16 @@ function requestChatRoomEntry() {
 }
 function enterChatRoom() {
   chatEntered.value = true;
+  chatMessages.value = [];
+  // ensure only one listener
+  webSocketStore.socketEventEmitter?.off(
+    "channelMessage",
+    handleChatRoomIncomingMessages
+  );
   // start listening to incomming chat room messages
   webSocketStore.socketEventEmitter?.on(
     "channelMessage",
-    handleChatRoomIncommingMessages
+    handleChatRoomIncomingMessages
   );
 }
 function requestChatRoomExit() {
@@ -133,7 +137,7 @@ function exitChatRoom() {
   // stop listening to incomming chat room messages
   webSocketStore.socketEventEmitter?.off(
     "channelMessage",
-    handleChatRoomIncommingMessages
+    handleChatRoomIncomingMessages
   );
 }
 function sendChatMessage() {
@@ -144,7 +148,7 @@ function sendChatMessage() {
     messageToSendText.value = "";
   }
 }
-function handleChatRoomIncommingMessages(
+function handleChatRoomIncomingMessages(
   channelMessage: SocketReceiveChannelMessage
 ) {
   if (channelMessage.channel === roomChannelName.value) {
@@ -165,7 +169,7 @@ onUnmounted(() => {
   // unsubscribe from event emitter
   webSocketStore.socketEventEmitter?.off(
     "channelMessage",
-    handleChatRoomIncommingMessages
+    handleChatRoomIncomingMessages
   );
 });
 </script>
