@@ -32,3 +32,6 @@ allure-results
 coverage
 /backend
 /docker_secrets/*.txt
+/playwright/test-results/
+/playwright-report/
+/playwright/.cache/
