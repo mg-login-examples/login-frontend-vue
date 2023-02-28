@@ -80,9 +80,7 @@ describe("views > GroupChat.vue", () => {
     // request chat room entry
     await wrapper.find(selectors.enterRoomButton).trigger("click");
     // assert request to enter room has been sent
-    expect(webSocketStore.subscribeToChannel).toHaveBeenCalledWith(
-      channelName
-    );
+    expect(webSocketStore.subscribeToChannel).toHaveBeenCalledWith(channelName);
   });
 
   it("enter chat room when channel subscribed successfully message is received", async () => {
@@ -93,7 +91,10 @@ describe("views > GroupChat.vue", () => {
     const webSocketStore = useWebSocketStore();
     webSocketStore.socketManager = {
       socket: vi.fn() as any as WebSocket,
-      socketEventEmitter: { on: vi.fn() } as any as Emitter<SocketEvents>,
+      socketEventEmitter: {
+        on: vi.fn(),
+        off: vi.fn(),
+      } as any as Emitter<SocketEvents>,
     };
     // open groupchat view
     const wrapper = mount(GroupChat, {
@@ -130,7 +131,7 @@ describe("views > GroupChat.vue", () => {
       webSocketStore.socketManager?.socketEventEmitter.on
     ).toHaveBeenCalledWith(
       "channelMessage",
-      (wrapper.vm as any).handleChatRoomIncommingMessages
+      (wrapper.vm as any).handleChatRoomIncomingMessages
     );
   });
 
@@ -215,7 +216,7 @@ describe("views > GroupChat.vue", () => {
       webSocketStore.socketManager?.socketEventEmitter.off
     ).toHaveBeenCalledWith(
       "channelMessage",
-      (wrapper.vm as any).handleChatRoomIncommingMessages
+      (wrapper.vm as any).handleChatRoomIncomingMessages
     );
   });
 
@@ -298,8 +299,8 @@ describe("views > GroupChat.vue", () => {
     expect(wrapper.find(selectors.chatBox).isVisible()).toBe(true);
     // assert no chat messages visible
     expect(wrapper.findAll(selectors.chatMessageContainer).length).toBe(0);
-    // mock event emitter triggering handleChatRoomIncommingMessages on new chat message
-    (wrapper.vm as any).handleChatRoomIncommingMessages(channelMessage1);
+    // mock event emitter triggering handleChatRoomIncomingMessages on new chat message
+    (wrapper.vm as any).handleChatRoomIncomingMessages(channelMessage1);
     await Vue.nextTick();
     // assert message is displayed in chat box
     let messageContainerEls = wrapper.findAll(selectors.chatMessageContainer);
@@ -311,8 +312,8 @@ describe("views > GroupChat.vue", () => {
     expect(messageContainer.find(selectors.chatMessageUser).text()).toBe(
       chatMessage1.user
     );
-    // mock event emitter triggering handleChatRoomIncommingMessages on new chat message
-    (wrapper.vm as any).handleChatRoomIncommingMessages(channelMessage2);
+    // mock event emitter triggering handleChatRoomIncomingMessages on new chat message
+    (wrapper.vm as any).handleChatRoomIncomingMessages(channelMessage2);
     await Vue.nextTick();
     // assert message is displayed in chat box
     messageContainerEls = wrapper.findAll(selectors.chatMessageContainer);
