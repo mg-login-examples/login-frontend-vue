@@ -45,7 +45,7 @@ jobs:
             rm results.zip &&
             curl http://localhost:5050/allure-docker-service/generate-report?project_id=frontend-unit
   e2e-tests-cypress:
-    name: Run e2e tests
+    name: Run cypress e2e tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -66,7 +66,7 @@ jobs:
         shell: bash
         env:
           MAILSLURP_API_KEY: ${{secrets.MAILSLURP_API_KEY}}
-      - name: Run e2e tests
+      - name: Run cypress e2e tests
         run: ./scripts_docker.sh run-e2e-tests-cypress
       - name: Zip allure reports
         if: success() || failure()
@@ -97,7 +97,7 @@ jobs:
             rm results.zip &&
             curl http://localhost:5050/allure-docker-service/generate-report?project_id=frontend-e2e-cypress
   e2e-tests-playwright:
-    name: Run e2e tests
+    name: Run playwright e2e tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -113,7 +113,7 @@ jobs:
         run: echo "password" > backend/docker_secrets/mongo_pwd.txt
       - name: Add redis password text file for a test redis container
         run: echo "password" > backend/docker_secrets/redis_pwd.txt
-      - name: Run e2e tests
+      - name: Run playwright e2e tests
         run: ./scripts_docker.sh run-e2e-tests-playwright
       - name: Zip allure reports
         if: success() || failure()
