@@ -9,7 +9,7 @@
     >
       <transition
         appear
-        enter-active-class="transition ease-out duration-300 transform "
+        enter-active-class="transition ease-out duration-300 transform"
         enter-from-class="opacity-0 translate-y-10 scale-95"
         enter-to-class="opacity-100 translate-y-0 scale-100"
         leave-active-class="ease-in duration-200"

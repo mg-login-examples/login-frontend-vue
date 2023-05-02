@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import type { User } from "@/models/user.model";
 import backendApi from "@/api/backendApi";
 import { useErrorsStore } from "./errors";
+import { getUserDisplayName } from "@/utils/userUtils/userName";
 
 interface UserState {
   authAttemptedOnce: boolean;
@@ -14,25 +15,34 @@ export const useUserStore = defineStore("user", {
     authAttemptedOnce: false,
     user: null,
   }),
+  getters: {
+    userName: (state): string => {
+      const name = state.user ? getUserDisplayName(state.user) : "";
+      return name ? name : "";
+    },
+  },
   actions: {
     async login(
       userEmail: string,
       userPassword: string,
       rememberMe: boolean
-    ): Promise<boolean> {
+    ): Promise<string> {
       try {
         await backendApi.users.login(userEmail, userPassword, rememberMe);
         // following authentication is made to check if cookies have been set
         if (await this.authenticate()) {
-          return true;
+          return "success";
         } else {
-          return false;
+          return "authentication failed";
         }
-      } catch (error) {
+      } catch (error: any) {
         const errorStore = useErrorsStore();
         errorStore.handleError(error);
         this.user = null;
-        return false;
+        if (error.response && error.response.status === 401) {
+          return "invalid login";
+        }
+        return "unknown error";
       }
     },
     async authenticate() {

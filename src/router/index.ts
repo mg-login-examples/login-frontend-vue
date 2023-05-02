@@ -62,6 +62,9 @@ export const routes: Array<RouteRecordRaw> = [
     path: "/verify-email",
     name: "verifyEmail",
     component: VerifyEmail,
+    meta: {
+      requiresAuth: true,
+    },
     props: (route) => ({
       user_requested_route: route.query.user_requested_route,
     }),
