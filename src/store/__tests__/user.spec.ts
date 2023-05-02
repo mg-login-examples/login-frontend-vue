@@ -50,7 +50,7 @@ describe("store > user.ts", () => {
       false
     );
     // assert success return
-    expect(loginResponse).toBe(true);
+    expect(loginResponse).toBe("success");
     // assert api login function called
     expect(mockBackendApiLogin).toHaveBeenCalledWith(
       fakeUserLogin.email,
@@ -76,7 +76,7 @@ describe("store > user.ts", () => {
       false
     );
     // assert failure return
-    expect(loginResponse).toBe(false);
+    expect(loginResponse).toBe("unknown error");
     // assert error handler called with api error
     expect(mockErrorsStore.handleError).toHaveBeenCalledWith(loginError);
     // assert user is null
