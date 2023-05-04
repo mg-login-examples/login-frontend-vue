@@ -63,7 +63,49 @@ describe("store > user.ts", () => {
     expect(userStore.user).toStrictEqual(fakeUser);
   });
 
-  it("handles login api error", async () => {
+  it("handles invalid login api error", async () => {
+    // mock api error return
+    const invalidoginAxiosError = { response: { status: 401 } };
+    mockBackendApiLogin.mockRejectedValue(invalidoginAxiosError);
+    // init user store
+    const userStore = useUserStore();
+    // invoke store login action
+    const loginResponse = await userStore.login(
+      fakeUserLogin.email,
+      fakeUserLogin.password,
+      false
+    );
+    // assert failure return
+    expect(loginResponse).toBe("invalid login");
+    // assert error handler called with api error
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(
+      invalidoginAxiosError
+    );
+    // assert user is null
+    expect(userStore.user).toBeNull();
+  });
+
+  it("handles auth error during login", async () => {
+    // mock login api success return
+    mockBackendApiLogin.mockReturnValue(fakeUser);
+    // mock auth api error return
+    const authError = Error("auth error");
+    mockBackendApiAuthenticate.mockRejectedValue(authError);
+    // init user store
+    const userStore = useUserStore();
+    // invoke store login action
+    const loginResponse = await userStore.login(
+      fakeUserLogin.email,
+      fakeUserLogin.password,
+      false
+    );
+    // assert failure return
+    expect(loginResponse).toBe("authentication failed");
+    // assert user is null
+    expect(userStore.user).toBeNull();
+  });
+
+  it("handles unknown login api error", async () => {
     // mock api error return
     const loginError = Error("login error");
     mockBackendApiLogin.mockRejectedValue(loginError);
