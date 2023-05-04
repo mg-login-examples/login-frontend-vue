@@ -96,7 +96,7 @@ export async function routerBeforeEachGuard(
         name: "login",
         query: { user_requested_route: to.fullPath },
       };
-    } else if (!userStore.user.is_verified) {
+    } else if (!userStore.user.is_verified && to.name !== "verifyEmail") {
       return {
         name: "verifyEmail",
         query: { user_requested_route: to.fullPath },
