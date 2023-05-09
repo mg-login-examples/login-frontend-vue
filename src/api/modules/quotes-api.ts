@@ -1,35 +1,34 @@
+import http from "./base";
+import apiEndpointsPath from "../api-endpoints-path";
 import type { QuoteCreate } from "@/models/quote-create.model";
 import type { Quote } from "@/models/quote.model";
-import http from "./base";
 
 const quotesAPI = {
   async getQuotes(
     params: { skip?: number; limit?: number } | undefined = undefined
   ): Promise<Quote[]> {
-    const skip = params && params.skip ? params.skip : 0;
-    const limit = params && params.limit ? params.limit : 40;
-    const response = await http.get(`/api/quotes/?skip=${skip}&limit=${limit}`);
+    const response = await http.get(apiEndpointsPath.getQuotes, { params });
     return <Quote[]>response.data;
   },
   async getUserQuotes(userId: number): Promise<Quote[]> {
-    const response = await http.get(`/api/users/${userId}/quotes/`);
+    const response = await http.get(apiEndpointsPath.getUserQuotes(userId));
     return <Quote[]>response.data;
   },
   async createQuote(quoteCreate: QuoteCreate): Promise<Quote> {
-    const response = await http.post(`/api/quotes/`, quoteCreate);
+    const response = await http.post(apiEndpointsPath.createQuote, quoteCreate);
     return <Quote>response.data;
   },
   async editQuote(quoteEdit: Quote) {
-    await http.put(`/api/quotes/${quoteEdit.id}`, quoteEdit);
+    await http.put(apiEndpointsPath.editQuote(quoteEdit.id), quoteEdit);
   },
   async deleteQuote(quoteId: number) {
-    await http.delete(`/api/quotes/${quoteId}/`);
+    await http.delete(apiEndpointsPath.deleteQuote(quoteId));
   },
   async likeQuote(quoteId: number, userId: number) {
-    await http.put(`/api/quotes/${quoteId}/users/${userId}/like/`);
+    await http.put(apiEndpointsPath.likeQuote(userId, quoteId));
   },
   async unlikeQuote(quoteId: number, userId: number) {
-    await http.delete(`/api/quotes/${quoteId}/users/${userId}/like/`);
+    await http.delete(apiEndpointsPath.unlikeQuote(userId, quoteId));
   },
 };
 

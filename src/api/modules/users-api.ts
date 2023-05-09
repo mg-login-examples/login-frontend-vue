@@ -1,8 +1,9 @@
+import { EnvironmentVars } from "@/utils/envUtils";
+import http from "./base";
+import apiEndpointsPath from "../api-endpoints-path";
 import type { User } from "@/models/user.model";
 import type { UserCreate } from "@/models/user-create.model";
 import type { LoginResponse } from "@/models/login-response.model";
-import { EnvironmentVars } from "@/utils/envUtils"; 
-import http from "./base";
 
 const usersAPI = {
   async login(
@@ -14,7 +15,7 @@ const usersAPI = {
     formData.append("username", userEmail);
     formData.append("password", userPassword);
     formData.append("remember_me", rememberMe.toString());
-    const response = await http.post("/api/login/", formData, {
+    const response = await http.post(apiEndpointsPath.login, formData, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
     const loginResponse: LoginResponse = <LoginResponse>response.data;
@@ -26,14 +27,14 @@ const usersAPI = {
     return loginResponse.user;
   },
   async authenticate(): Promise<User> {
-    const response = await http.post("/api/authenticate/");
+    const response = await http.post(apiEndpointsPath.authenticate);
     return <User>response.data;
   },
   async logout(): Promise<void> {
-    await http.post("/api/logout/");
+    await http.post(apiEndpointsPath.logout);
   },
   async createUser(userCreate: UserCreate): Promise<User> {
-    const response = await http.post(`/api/users/`, userCreate);
+    const response = await http.post(apiEndpointsPath.createUser, userCreate);
     const loginResponse: LoginResponse = <LoginResponse>response.data;
     if (EnvironmentVars.addAuthorizationHeader) {
       http.defaults.headers.common[
@@ -42,8 +43,19 @@ const usersAPI = {
     }
     return loginResponse.user;
   },
+  async getUsers(filterUserText: string): Promise<User[]> {
+    const params = { filter_users_text: filterUserText };
+    const response = await http.get(apiEndpointsPath.getUsers, { params });
+    return <User[]>response.data;
+  },
+  async getUsersByIds(userIds: number[]): Promise<User[]> {
+    const response = await http.post(apiEndpointsPath.getUsersByIds, userIds);
+    return <User[]>response.data;
+  },
   async sendEmailWithPasswordResetLink(userEmail: string): Promise<void> {
-    await http.post("/api/password-reset-link/", { email: userEmail });
+    await http.post(apiEndpointsPath.sendEmailWithPasswordResetLink, {
+      email: userEmail,
+    });
   },
 };
 

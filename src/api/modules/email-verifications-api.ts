@@ -1,13 +1,12 @@
 import http from "./base";
+import apiEndpointsPath from "../api-endpoints-path";
 
 const emailsAPI = {
   async verifyEmail(verificationCode: number): Promise<void> {
-    await http.post(
-      `/api/email-verifications/verify-email/${verificationCode}/`
-    );
+    await http.post(apiEndpointsPath.verifyEmail(verificationCode));
   },
   async resendEmail(): Promise<void> {
-    await http.post(`/api/email-verifications/resend-email/`);
+    await http.post(apiEndpointsPath.resendEmailForVerification);
   },
 };
 

@@ -1,5 +1,5 @@
 #!/bin/sh
-docker_down_all_frontend_containers() { docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.vueapp_static.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -f compose-files/compose.cypress.yml -p frontend down; }
+docker_down_all_containers() { docker-compose -f docker-compose.yml -p frontend down --rmi all -v --remove-orphans; }
 build_backend_stack_docker_images() { docker-compose -f docker-compose.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -p frontend build; }
 run_db_migrations() { docker-compose -f docker-compose.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -p frontend run fastapi alembic upgrade head; }
 create_admin_users() { docker-compose -f docker-compose.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -p frontend run fastapi python main.py add_admin_user $1 $2; }
@@ -7,15 +7,15 @@ create_admin_users() { docker-compose -f docker-compose.yml -f compose-files/com
 case=${1:-default}
 if [ $case = "launch-frontend-local" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -p frontend up --build
 elif [ $case = "launch-frontend-prod" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
 elif [ $case = "launch-fullstack-local" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    # Ensure app.log file is created otherwise docker creates app.log directory by default as it is mounted
    touch backend/app.log
    # Define test admin users
@@ -27,7 +27,7 @@ then
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -p frontend up --build
 elif [ $case = "launch-fullstack-local-with-proxy" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    # Ensure app.log file is created otherwise docker creates app.log directory by default as it is mounted
    touch backend/app.log
    # Define test admin users
@@ -44,19 +44,19 @@ then
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend up --build
 elif [ $case = "launch-tdd" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -p frontend build
    export VITE_LOG_ENV_VARS=false
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -p frontend run vueapp_dev npm run test:unit
 elif [ $case = "run-unit-tests" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -p frontend build
    export VITE_LOG_ENV_VARS=false
    docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_compiled.yml -p frontend run vueapp_dev npm run test:unit:run
 elif [ $case = "run-e2e-tests-cypress" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    # create backend log file (used as docker volume) to prevent docker from creating a directory
    touch backend/app.log
    # Define test admin users
@@ -89,7 +89,7 @@ then
    docker-compose -f docker-compose.yml -f compose-files/compose.cypress.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend run vueapp_test_e2e_cypress npm run test:e2e:dev:run:docker
 elif [ $case = "run-e2e-tests-playwright" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    # create backend log file (used as docker volume) to prevent docker from creating a directory
    touch backend/app.log
    # Define test admin users
@@ -119,17 +119,17 @@ then
 elif [ $case = "launch-frontend-cloud-dev" ]
 then
    # stop vue service only
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    export PRIMARY_DOMAIN="login-example.duckdns.org"
    export VITE_MODE="cloud_development"
    docker-compose -f docker-compose.yml -f docker-compose.override.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
 elif [ $case = "launch-databases" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
    docker-compose -f docker-compose.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -p frontend up --build
 elif [ $case = "down" ]
 then
-   docker_down_all_frontend_containers
+   docker_down_all_containers
 else
    echo "no option passed"
    echo "available options are:
