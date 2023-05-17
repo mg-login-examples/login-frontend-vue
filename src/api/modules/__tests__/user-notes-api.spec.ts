@@ -49,7 +49,7 @@ describe("api > modules > notes.ts", () => {
       undefined
     );
     expect(http.put).toHaveBeenCalledWith(
-      `/api/user-notes/${fakeUserNote.id}`,
+      `/api/user-notes/${fakeUserNote.id}/`,
       userNoteEdit
     );
   });

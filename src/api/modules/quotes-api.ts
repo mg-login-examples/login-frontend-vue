@@ -25,10 +25,10 @@ const quotesAPI = {
     await http.delete(apiEndpointsPath.deleteQuote(quoteId));
   },
   async likeQuote(quoteId: number, userId: number) {
-    await http.put(apiEndpointsPath.likeQuote(userId, quoteId));
+    await http.put(apiEndpointsPath.likeQuote(quoteId, userId));
   },
   async unlikeQuote(quoteId: number, userId: number) {
-    await http.delete(apiEndpointsPath.unlikeQuote(userId, quoteId));
+    await http.delete(apiEndpointsPath.unlikeQuote(quoteId, userId));
   },
 };
 

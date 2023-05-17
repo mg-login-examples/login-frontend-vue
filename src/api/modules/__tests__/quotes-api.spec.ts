@@ -20,28 +20,16 @@ describe("api > modules > quotes.ts", () => {
   it("gets quotes", async () => {
     http.get = vi.fn().mockImplementation(mockAxiosGetQuotes);
     // call get quotes with no params
-    const defaultSkip = 0;
-    const defaultLimit = 40;
     await expect(quotesApi.getQuotes()).resolves.toEqual(fakeQuotes);
-    expect(http.get).toHaveBeenCalledWith(
-      `/api/quotes/?skip=${defaultSkip}&limit=${defaultLimit}`
-    );
+    expect(http.get).toHaveBeenCalledWith(`/api/quotes/`, {});
     // call get quotes with only skip param
-    const skipParam = 2;
-    await expect(quotesApi.getQuotes({ skip: skipParam })).resolves.toEqual(
-      fakeQuotes
-    );
-    expect(http.get).toHaveBeenCalledWith(
-      `/api/quotes/?skip=${skipParam}&limit=${defaultLimit}`
-    );
+    const params1 = { skip: 2 };
+    await expect(quotesApi.getQuotes(params1)).resolves.toEqual(fakeQuotes);
+    expect(http.get).toHaveBeenCalledWith(`/api/quotes/`, { params: params1 });
     // call get quotes with both skip and limit params
-    const limitParam = 77;
-    await expect(
-      quotesApi.getQuotes({ skip: skipParam, limit: limitParam })
-    ).resolves.toEqual(fakeQuotes);
-    expect(http.get).toHaveBeenCalledWith(
-      `/api/quotes/?skip=${skipParam}&limit=${limitParam}`
-    );
+    const params2 = { skip: 3, limit: 77 } as any;
+    await expect(quotesApi.getQuotes(params2)).resolves.toEqual(fakeQuotes);
+    expect(http.get).toHaveBeenCalledWith(`/api/quotes/`, { params: params2 });
   });
 
   it("gets user quotes by userId", async () => {
@@ -74,7 +62,7 @@ describe("api > modules > quotes.ts", () => {
     };
     await expect(quotesApi.editQuote(quoteEdit)).resolves.toEqual(undefined);
     expect(http.put).toHaveBeenCalledWith(
-      `/api/quotes/${fakeQuote.id}`,
+      `/api/quotes/${fakeQuote.id}/`,
       quoteEdit
     );
   });
