@@ -4,6 +4,7 @@ import type { User } from "@/models/user.model";
 import backendApi from "@/api/backendApi";
 import { useErrorsStore } from "./errors";
 import { getUserDisplayName } from "@/utils/userUtils/userName";
+import type { GoogleSignInPayload } from "@/models/google-sign-in-payload.model";
 
 interface UserState {
   authAttemptedOnce: boolean;
@@ -29,6 +30,27 @@ export const useUserStore = defineStore("user", {
     ): Promise<string> {
       try {
         await backendApi.users.login(userEmail, userPassword, rememberMe);
+        // following authentication is made to check if cookies have been set
+        if (await this.authenticate()) {
+          return "success";
+        } else {
+          return "authentication failed";
+        }
+      } catch (error: any) {
+        const errorStore = useErrorsStore();
+        errorStore.handleError(error);
+        this.user = null;
+        if (error.response && error.response.status === 401) {
+          return "invalid login";
+        }
+        return "unknown error";
+      }
+    },
+    async googleLogin(
+      googleSignInPayload: GoogleSignInPayload
+    ): Promise<string> {
+      try {
+        await backendApi.users.googleLogin(googleSignInPayload);
         // following authentication is made to check if cookies have been set
         if (await this.authenticate()) {
           return "success";

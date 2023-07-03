@@ -1,8 +1,6 @@
 <template>
   <div class="h-full flex justify-center items-center bg-slate-100">
-    <div
-      class="bg-white w-96 h-80 flex flex-col justify-center items-center p-4"
-    >
+    <div class="bg-white w-96 flex flex-col justify-center items-center p-4">
       <div class="w-72 my-3">
         <input
           v-model="userEmail"
@@ -64,18 +62,28 @@
           SIGN UP
         </router-link>
       </div>
+      <div class="w-72 my-3 flex justify-center">
+        <GoogleLogin :callback="googleSignIn" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
+import type { GoogleSignInPayload } from "@/models/google-sign-in-payload.model";
 
 const props = defineProps<{
   user_requested_route?: string;
 }>();
+
+onMounted(() => {
+  const googleApiScript = document.createElement("script");
+  googleApiScript.setAttribute("src", "https://accounts.google.com/gsi/client");
+  document.head.appendChild(googleApiScript);
+});
 
 const router = useRouter();
 
@@ -105,5 +113,16 @@ async function login() {
 
 function togglePasswordVisibility() {
   showPassword.value = !showPassword.value;
+}
+
+async function googleSignIn(googleSignInPayload: GoogleSignInPayload) {
+  const isLoginSuccess = await userStore.googleLogin(googleSignInPayload);
+  if (isLoginSuccess) {
+    if (props.user_requested_route) {
+      router.push(props.user_requested_route as string);
+    } else {
+      router.push("/");
+    }
+  }
 }
 </script>

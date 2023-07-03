@@ -6,6 +6,7 @@ const apiEndpointsPath = {
   getUsers: `/api/users/`,
   getUsersByIds: `/api/users/ids`,
   sendEmailWithPasswordResetLink: `/api/password-reset-link/`,
+  googleLogin: `/api/oauth/google/`,
 
   verifyEmail: (verificationCode: number) =>
     `/api/email-verifications/verify-email/${verificationCode}/`,

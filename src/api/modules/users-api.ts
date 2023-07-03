@@ -4,6 +4,7 @@ import apiEndpointsPath from "../api-endpoints-path";
 import type { User } from "@/models/user.model";
 import type { UserCreate } from "@/models/user-create.model";
 import type { LoginResponse } from "@/models/login-response.model";
+import type { GoogleSignInPayload } from "@/models/google-sign-in-payload.model";
 
 const usersAPI = {
   async login(
@@ -56,6 +57,13 @@ const usersAPI = {
     await http.post(apiEndpointsPath.sendEmailWithPasswordResetLink, {
       email: userEmail,
     });
+  },
+  async googleLogin(googleSignInPayload: GoogleSignInPayload) {
+    const response = await http.post(
+      apiEndpointsPath.googleLogin,
+      googleSignInPayload
+    );
+    console.log(response);
   },
 };
 
