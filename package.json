@@ -31,7 +31,8 @@
     "password-validator": "^5.3.0",
     "pinia": "^2.0.23",
     "vue": "^3.2.41",
-    "vue-router": "^4.1.5"
+    "vue-router": "^4.1.5",
+    "vue3-google-login": "^2.0.15"
   },
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^13.1.0",
