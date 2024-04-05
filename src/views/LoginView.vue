@@ -28,11 +28,7 @@
         />
       </div>
       <div class="w-72 flex my-3">
-        <input
-          type="checkbox"
-          v-model="rememberMe"
-          data-test="login--remember-me-checkbox"
-        />
+        <input type="checkbox" v-model="rememberMe" data-test="login--remember-me-checkbox" />
         <div class="mx-2 text-sm">Remember Me</div>
         <div class="grow"></div>
         <router-link
@@ -54,11 +50,7 @@
       </div>
       <div class="w-72 my-3 flex text-xs">
         <span class="mr-2">Need an account? </span>
-        <router-link
-          to="/signup"
-          class="underline"
-          data-test="login--signup-link"
-        >
+        <router-link to="/signup" class="underline" data-test="login--signup-link">
           SIGN UP
         </router-link>
       </div>
@@ -70,58 +62,58 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from "@/store/user";
-import type { GoogleSignInPayload } from "@/models/google-sign-in-payload.model";
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/store/user'
+import type { GoogleSignInPayload } from '@/models/google-sign-in-payload.model'
 
 const props = defineProps<{
-  user_requested_route?: string;
-}>();
+  user_requested_route?: string
+}>()
 
 onMounted(() => {
-  const googleApiScript = document.createElement("script");
-  googleApiScript.setAttribute("src", "https://accounts.google.com/gsi/client");
-  document.head.appendChild(googleApiScript);
-});
+  const googleApiScript = document.createElement('script')
+  googleApiScript.setAttribute('src', 'https://accounts.google.com/gsi/client')
+  document.head.appendChild(googleApiScript)
+})
 
-const router = useRouter();
+const router = useRouter()
 
-const userEmail = ref("");
-const userPassword = ref("");
-const rememberMe = ref(false);
+const userEmail = ref('')
+const userPassword = ref('')
+const rememberMe = ref(false)
 
-const showPassword = ref(false);
+const showPassword = ref(false)
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 async function login() {
   const isLoginSuccess = await userStore.login(
     userEmail.value,
     userPassword.value,
     rememberMe.value
-  );
+  )
   if (isLoginSuccess) {
     if (!userStore.user?.is_verified) {
-      router.push("/verify-email");
+      router.push('/verify-email')
     } else if (props.user_requested_route) {
-      router.push(props.user_requested_route as string);
+      router.push(props.user_requested_route as string)
     } else {
-      router.push("/");
+      router.push('/')
     }
   }
 }
 
 function togglePasswordVisibility() {
-  showPassword.value = !showPassword.value;
+  showPassword.value = !showPassword.value
 }
 
 async function googleSignIn(googleSignInPayload: GoogleSignInPayload) {
-  const isLoginSuccess = await userStore.googleLogin(googleSignInPayload);
+  const isLoginSuccess = await userStore.googleLogin(googleSignInPayload)
   if (isLoginSuccess) {
     if (props.user_requested_route) {
-      router.push(props.user_requested_route as string);
+      router.push(props.user_requested_route as string)
     } else {
-      router.push("/");
+      router.push('/')
     }
   }
 }

@@ -1,8 +1,8 @@
-import type { Emitter } from "mitt";
+import type { Emitter } from 'mitt'
 
-import type { SocketEvents } from "@/models/socket-event-emitter.type";
+import type { SocketEvents } from '@/models/socket-event-emitter.type'
 
 export type WebSocketManager = {
-  socket: WebSocket;
-  socketEventEmitter: Emitter<SocketEvents>;
-};
+  socket: WebSocket
+  socketEventEmitter: Emitter<SocketEvents>
+}

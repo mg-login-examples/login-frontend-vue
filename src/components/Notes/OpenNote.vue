@@ -5,10 +5,7 @@
     v-show="showOpenNote"
     class="flex justify-center flex-grow"
   >
-    <div
-      class="flex flex-col"
-      :class="!activateMobileDisplay ? 'w-[400px]' : 'w-full'"
-    >
+    <div class="flex flex-col" :class="!activateMobileDisplay ? 'w-[400px]' : 'w-full'">
       <div class="mt-2 p-2 bg-slate-500">
         <input
           type="text"
@@ -40,43 +37,43 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch } from 'vue'
 
-import { useUserNotesStore } from "@/store/user-notes";
-import type { UserNote } from "@/models/user-note.model";
-import type { UserNoteCreate } from "@/models/user-note-create.model";
+import { useUserNotesStore } from '@/store/user-notes'
+import type { UserNote } from '@/models/user-note.model'
+import type { UserNoteCreate } from '@/models/user-note-create.model'
 
 const props = defineProps<{
-  activateMobileDisplay: boolean;
-  showNotesListMobileDisplay: boolean;
-  selectedUserNote: UserNote | UserNoteCreate | undefined;
-}>();
+  activateMobileDisplay: boolean
+  showNotesListMobileDisplay: boolean
+  selectedUserNote: UserNote | UserNoteCreate | undefined
+}>()
 
-const userNotesStore = useUserNotesStore();
+const userNotesStore = useUserNotesStore()
 
 const showOpenNote = computed(
   () =>
     !props.activateMobileDisplay ||
     (props.activateMobileDisplay && !props.showNotesListMobileDisplay)
-);
+)
 
-const userNoteModel = ref<UserNote | UserNoteCreate>();
+const userNoteModel = ref<UserNote | UserNoteCreate>()
 watch(
   () => props.selectedUserNote,
   (userNote) => {
     if (userNote) {
-      userNoteModel.value = { ...userNote };
+      userNoteModel.value = { ...userNote }
     }
   },
   { immediate: true }
-);
+)
 
 function saveUserNote() {
   if (userNoteModel.value) {
     if ((userNoteModel.value as UserNote).id) {
-      userNotesStore.editUserNote(userNoteModel.value as UserNote);
+      userNotesStore.editUserNote(userNoteModel.value as UserNote)
     } else {
-      userNotesStore.createUserNote(userNoteModel.value);
+      userNotesStore.createUserNote(userNoteModel.value)
     }
   }
 }

@@ -1,4 +1,4 @@
 export interface SocketReceiveChannelMessage {
-  channel: string;
-  message: unknown;
+  channel: string
+  message: unknown
 }

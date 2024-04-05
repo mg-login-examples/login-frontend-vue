@@ -28,10 +28,7 @@
           >
             <font-awesome-icon icon="arrow-left" />
           </button>
-          <div
-            class="grow flex justify-center p-2"
-            data-test="group-chat--room-name"
-          >
+          <div class="grow flex justify-center p-2" data-test="group-chat--room-name">
             {{ chatName }}
           </div>
           <div class="w-8"></div>
@@ -49,10 +46,7 @@
           >
             <div data-test="group-chat--message-text">{{ message.text }}</div>
             <div class="flex-grow"></div>
-            <div
-              class="text-slate-500 text-right"
-              data-test="group-chat--message-user"
-            >
+            <div class="text-slate-500 text-right" data-test="group-chat--message-user">
               {{ message.user }}
             </div>
           </div>
@@ -78,98 +72,81 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted, nextTick } from "vue";
+import { ref, computed, onUnmounted, nextTick } from 'vue'
 
-import { useWebSocketStore } from "@/store/webSocket";
-import type { SocketReceiveChannelSubscriptionStatus } from "@/models/socket-receive-channel-subscription-status.model";
-import type { SocketReceiveChannelMessage } from "@/models/socket-receive-channel-message.model";
-import type { GroupChatMessage } from "@/models/group-chat-message.model";
+import { useWebSocketStore } from '@/store/webSocket'
+import type { SocketReceiveChannelSubscriptionStatus } from '@/models/socket-receive-channel-subscription-status.model'
+import type { SocketReceiveChannelMessage } from '@/models/socket-receive-channel-message.model'
+import type { GroupChatMessage } from '@/models/group-chat-message.model'
 
-const webSocketStore = useWebSocketStore();
+const webSocketStore = useWebSocketStore()
 
-const chatName = ref("");
-const chatEntered = ref(false);
-const roomChannelName = computed(() => `group-chat/${chatName.value}`);
+const chatName = ref('')
+const chatEntered = ref(false)
+const roomChannelName = computed(() => `group-chat/${chatName.value}`)
 
-const chatMessages = ref<GroupChatMessage[]>([]);
-const messageToSendText = ref("");
-const chatMessagesViewEl = ref<HTMLElement>();
+const chatMessages = ref<GroupChatMessage[]>([])
+const messageToSendText = ref('')
+const chatMessagesViewEl = ref<HTMLElement>()
 
 // setup listener to handle chat room subscription success / failure
 webSocketStore.socketEventEmitter?.on(
-  "channelSubscriptionStatus",
+  'channelSubscriptionStatus',
   (chatRoomSubscription: SocketReceiveChannelSubscriptionStatus) => {
     if (chatRoomSubscription.channel === roomChannelName.value) {
       if (chatRoomSubscription.subscribed) {
-        enterChatRoom();
+        enterChatRoom()
       } else {
-        exitChatRoom();
+        exitChatRoom()
       }
     }
   }
-);
+)
 function requestChatRoomEntry() {
   if (chatName.value) {
     // send subscribe request to receive messages from chat room
-    webSocketStore.subscribeToChannel(roomChannelName.value);
+    webSocketStore.subscribeToChannel(roomChannelName.value)
   }
 }
 function enterChatRoom() {
-  chatEntered.value = true;
-  chatMessages.value = [];
+  chatEntered.value = true
+  chatMessages.value = []
   // ensure only one listener
-  webSocketStore.socketEventEmitter?.off(
-    "channelMessage",
-    handleChatRoomIncomingMessages
-  );
+  webSocketStore.socketEventEmitter?.off('channelMessage', handleChatRoomIncomingMessages)
   // start listening to incomming chat room messages
-  webSocketStore.socketEventEmitter?.on(
-    "channelMessage",
-    handleChatRoomIncomingMessages
-  );
+  webSocketStore.socketEventEmitter?.on('channelMessage', handleChatRoomIncomingMessages)
 }
 function requestChatRoomExit() {
-  webSocketStore.unsubscribeFromChannel(roomChannelName.value);
+  webSocketStore.unsubscribeFromChannel(roomChannelName.value)
 }
 function exitChatRoom() {
-  chatEntered.value = false;
-  chatName.value = "";
+  chatEntered.value = false
+  chatName.value = ''
   // stop listening to incomming chat room messages
-  webSocketStore.socketEventEmitter?.off(
-    "channelMessage",
-    handleChatRoomIncomingMessages
-  );
+  webSocketStore.socketEventEmitter?.off('channelMessage', handleChatRoomIncomingMessages)
 }
 function sendChatMessage() {
   if (messageToSendText.value) {
     webSocketStore.sendBySocketToChannel(roomChannelName.value, {
-      text: messageToSendText.value,
-    });
-    messageToSendText.value = "";
+      text: messageToSendText.value
+    })
+    messageToSendText.value = ''
   }
 }
-function handleChatRoomIncomingMessages(
-  channelMessage: SocketReceiveChannelMessage
-) {
+function handleChatRoomIncomingMessages(channelMessage: SocketReceiveChannelMessage) {
   if (channelMessage.channel === roomChannelName.value) {
-    const groupChatMessage = channelMessage.message as GroupChatMessage;
-    chatMessages.value.push(groupChatMessage);
+    const groupChatMessage = channelMessage.message as GroupChatMessage
+    chatMessages.value.push(groupChatMessage)
     nextTick(() => {
-      chatMessagesViewEl.value?.scrollTo(
-        0,
-        chatMessagesViewEl.value?.scrollHeight
-      );
-    });
+      chatMessagesViewEl.value?.scrollTo(0, chatMessagesViewEl.value?.scrollHeight)
+    })
   }
 }
 
 onUnmounted(() => {
   // send websocket message to unsubscribe from chat channel
-  webSocketStore.unsubscribeFromChannel(roomChannelName.value);
+  webSocketStore.unsubscribeFromChannel(roomChannelName.value)
   // unsubscribe from event emitter
-  webSocketStore.socketEventEmitter?.off(
-    "channelMessage",
-    handleChatRoomIncomingMessages
-  );
-});
+  webSocketStore.socketEventEmitter?.off('channelMessage', handleChatRoomIncomingMessages)
+})
 </script>

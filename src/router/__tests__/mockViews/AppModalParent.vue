@@ -7,12 +7,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
-import AppModal from "@/components/generic/modal/AppModal.vue";
-import AppModalContent from "./AppModalContent.vue";
+import AppModal from '@/components/generic/modal/AppModal.vue'
+import AppModalContent from './AppModalContent.vue'
 
-const showModal = ref(false);
+const showModal = ref(false)
 
-defineExpose({ showModal });
+defineExpose({ showModal })
 </script>

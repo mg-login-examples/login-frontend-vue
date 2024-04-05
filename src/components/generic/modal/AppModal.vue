@@ -16,12 +16,7 @@
         leave-from-class="opacity-100 translate-y-0 scale-100"
         leave-to-class="opacity-0 translate-y-10 translate-y-0 scale-95"
       >
-        <div
-          ref="modal"
-          @click.stop=""
-          v-bind="$attrs"
-          data-test="modal--focus-element-wrapper"
-        >
+        <div ref="modal" @click.stop="" v-bind="$attrs" data-test="modal--focus-element-wrapper">
           <slot></slot>
         </div>
       </transition>
@@ -31,22 +26,22 @@
 
 <script lang="ts">
 export default {
-  inheritAttrs: false,
-};
+  inheritAttrs: false
+}
 </script>
 
 <script setup lang="ts">
 defineProps<{
-  modelValue: boolean;
-  closeWhenClickOutside?: boolean;
-}>();
+  modelValue: boolean
+  closeWhenClickOutside?: boolean
+}>()
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void;
-}>();
+  (e: 'update:modelValue', value: boolean): void
+}>()
 
 function closeModal() {
-  emit("update:modelValue", false);
+  emit('update:modelValue', false)
 }
 </script>
 

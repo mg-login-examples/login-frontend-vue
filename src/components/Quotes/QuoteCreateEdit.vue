@@ -1,10 +1,7 @@
 <template>
   <div class="p-4 bg-white w-96">
-    <div
-      class="flex justify-center my-4 text-2xl"
-      data-test="user-quote--create-edit-quote--title"
-    >
-      {{ quote ? "Edit Quote" : "Write A Quote" }}
+    <div class="flex justify-center my-4 text-2xl" data-test="user-quote--create-edit-quote--title">
+      {{ quote ? 'Edit Quote' : 'Write A Quote' }}
     </div>
     <div class="my-4">
       <textarea
@@ -35,40 +32,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch } from 'vue'
 
-import type { Quote } from "@/models/quote.model";
+import type { Quote } from '@/models/quote.model'
 
 const props = defineProps<{
-  quote?: Quote;
-}>();
+  quote?: Quote
+}>()
 
-const quoteText = ref("");
+const quoteText = ref('')
 
 watch(
   () => props.quote,
   (newQuote) => {
     if (newQuote) {
-      quoteText.value = newQuote.text;
+      quoteText.value = newQuote.text
     }
   },
   { immediate: true }
-);
+)
 
 function save() {
   if (props.quote) {
-    const quoteEdited: Quote = { ...props.quote, text: quoteText.value };
-    emit("editQuote", quoteEdited);
+    const quoteEdited: Quote = { ...props.quote, text: quoteText.value }
+    emit('editQuote', quoteEdited)
   } else {
-    emit("createQuote", quoteText.value);
+    emit('createQuote', quoteText.value)
   }
 }
 function cancel() {
-  emit("cancel");
+  emit('cancel')
 }
 const emit = defineEmits<{
-  (e: "createQuote", quoteText: string): void;
-  (e: "editQuote", quote: Quote): void;
-  (e: "cancel"): void;
-}>();
+  (e: 'createQuote', quoteText: string): void
+  (e: 'editQuote', quote: Quote): void
+  (e: 'cancel'): void
+}>()
 </script>

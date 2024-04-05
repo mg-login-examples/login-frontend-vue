@@ -3,12 +3,12 @@ import {
   // Suite,
   TestCase,
   TestResult,
-  TestStep,
-} from "@playwright/test/reporter";
+  TestStep
+} from '@playwright/test/reporter'
 
 class MyReporter implements Reporter {
   onStepEnd(test: TestCase, result: TestResult, step: TestStep) {
-    console.log(step.title);
+    console.log(step.title)
   }
 }
-export default MyReporter;
+export default MyReporter

@@ -1,8 +1,6 @@
 <template>
   <div class="h-full flex justify-center items-center bg-slate-100">
-    <div
-      class="bg-white w-96 h-80 flex flex-col justify-center items-center p-4"
-    >
+    <div class="bg-white w-96 h-80 flex flex-col justify-center items-center p-4">
       <div class="w-72 my-3">
         <input
           v-model="userEmail"
@@ -58,22 +56,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import passwordValidator from "password-validator";
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import passwordValidator from 'password-validator'
 
-import { useUserStore } from "@/store/user";
+import { useUserStore } from '@/store/user'
 
-const router = useRouter();
+const router = useRouter()
 
-const userEmail = ref("");
-const userPassword = ref("");
-const userPasswordConfirm = ref("");
+const userEmail = ref('')
+const userPassword = ref('')
+const userPasswordConfirm = ref('')
 
-const showPassword = ref(false);
+const showPassword = ref(false)
 
 function togglePasswordVisibility() {
-  showPassword.value = !showPassword.value;
+  showPassword.value = !showPassword.value
 }
 
 const emailValid = computed(() => {
@@ -81,29 +79,24 @@ const emailValid = computed(() => {
     .toLowerCase()
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-  return matchesEmailPattern !== null;
-});
-const passwordsMatch = computed(
-  () => userPassword.value === userPasswordConfirm.value
-);
-const passwordValidationSchema = new passwordValidator();
-passwordValidationSchema.is().min(8).is().max(20).has().not().spaces();
+    )
+  return matchesEmailPattern !== null
+})
+const passwordsMatch = computed(() => userPassword.value === userPasswordConfirm.value)
+const passwordValidationSchema = new passwordValidator()
+passwordValidationSchema.is().min(8).is().max(20).has().not().spaces()
 const passwordValid = computed(() => {
-  return passwordValidationSchema.validate(userPassword.value);
-});
+  return passwordValidationSchema.validate(userPassword.value)
+})
 const enableSubmitButton = computed(() => {
-  return emailValid.value && passwordsMatch.value && passwordValid.value;
-});
+  return emailValid.value && passwordsMatch.value && passwordValid.value
+})
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 async function createUser() {
-  const isUserCreationSuccess = await userStore.createUser(
-    userEmail.value,
-    userPassword.value
-  );
+  const isUserCreationSuccess = await userStore.createUser(userEmail.value, userPassword.value)
   if (isUserCreationSuccess) {
-    router.push({ name: "verifyEmail" });
+    router.push({ name: 'verifyEmail' })
   }
 }
 </script>

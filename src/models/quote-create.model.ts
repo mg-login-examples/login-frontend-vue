@@ -1,6 +1,6 @@
-import type { User } from "./user.model";
+import type { User } from './user.model'
 
 export interface QuoteCreate {
-  text: string;
-  author: User | undefined;
+  text: string
+  author: User | undefined
 }

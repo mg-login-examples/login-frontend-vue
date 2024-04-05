@@ -10,7 +10,7 @@
       :class="[
         modelValue ? 'translate-x-3' : '',
         switchButtonBackground,
-        switchAnimation ? 'ease-in-out' : '',
+        switchAnimation ? 'ease-in-out' : ''
       ]"
       data-cc="switch--button"
     >
@@ -35,49 +35,47 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue'
 
 const props = defineProps<{
-  modelValue: boolean;
-  switchAnimation?: boolean;
+  modelValue: boolean
+  switchAnimation?: boolean
 
-  switchIcon?: string;
+  switchIcon?: string
 
-  switchOffBackground?: string;
-  switchOffButtonBackground?: string;
-  switchOffIcon?: string;
-  switchOffIconColor?: string;
+  switchOffBackground?: string
+  switchOffButtonBackground?: string
+  switchOffIcon?: string
+  switchOffIconColor?: string
 
-  switchOnBackground?: string;
-  switchOnButtonBackground?: string;
-  switchOnIcon?: string;
-  switchOnIconColor?: string;
-}>();
+  switchOnBackground?: string
+  switchOnButtonBackground?: string
+  switchOnIcon?: string
+  switchOnIconColor?: string
+}>()
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void;
-}>();
+  (e: 'update:modelValue', value: boolean): void
+}>()
 
 function toggleSwitch() {
-  emit("update:modelValue", !props.modelValue);
+  emit('update:modelValue', !props.modelValue)
 }
 
 const switchBackground = computed(() => {
   if (props.modelValue) {
-    return props.switchOnBackground ? props.switchOnBackground : "bg-green-400";
+    return props.switchOnBackground ? props.switchOnBackground : 'bg-green-400'
   }
-  return props.switchOffBackground
-    ? props.switchOffBackground
-    : "bg-gray-300 dark:bg-gray-700";
-});
+  return props.switchOffBackground ? props.switchOffBackground : 'bg-gray-300 dark:bg-gray-700'
+})
 const switchButtonBackground = computed(() => {
   if (props.modelValue) {
     return props.switchOnButtonBackground
       ? props.switchOnButtonBackground
-      : "bg-white dark:bg-black";
+      : 'bg-white dark:bg-black'
   }
   return props.switchOffButtonBackground
     ? props.switchOffButtonBackground
-    : "bg-white dark:bg-black";
-});
+    : 'bg-white dark:bg-black'
+})
 </script>

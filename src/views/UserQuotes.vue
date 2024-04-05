@@ -43,63 +43,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted } from "vue";
+import { ref, onUnmounted } from 'vue'
 
-import QuoteTile from "@/components/Quotes/QuoteTile.vue";
-import AppModal from "@/components/generic/modal/AppModal.vue";
-import QuoteCreateEdit from "@/components/Quotes/QuoteCreateEdit.vue";
-import QuoteDelete from "@/components/Quotes/QuoteDelete.vue";
-import { useQuotesStore } from "@/store/quotes";
-import type { Quote } from "@/models/quote.model";
+import QuoteTile from '@/components/Quotes/QuoteTile.vue'
+import AppModal from '@/components/generic/modal/AppModal.vue'
+import QuoteCreateEdit from '@/components/Quotes/QuoteCreateEdit.vue'
+import QuoteDelete from '@/components/Quotes/QuoteDelete.vue'
+import { useQuotesStore } from '@/store/quotes'
+import type { Quote } from '@/models/quote.model'
 
-const quotesStore = useQuotesStore();
+const quotesStore = useQuotesStore()
 
-quotesStore.getUserQuotes();
+quotesStore.getUserQuotes()
 
 // Create/Edit quote
-const showCreateQuoteModal = ref(false);
-const quoteToEdit = ref<Quote | undefined>(undefined);
+const showCreateQuoteModal = ref(false)
+const quoteToEdit = ref<Quote | undefined>(undefined)
 
 function openCreateQuoteModal() {
-  quoteToEdit.value = undefined;
-  showCreateQuoteModal.value = true;
+  quoteToEdit.value = undefined
+  showCreateQuoteModal.value = true
 }
 async function createQuote(quoteText: string) {
-  await quotesStore.createUserQuote(quoteText);
-  showCreateQuoteModal.value = false;
+  await quotesStore.createUserQuote(quoteText)
+  showCreateQuoteModal.value = false
 }
 
 function openEditQuoteModal(quoteId: number) {
-  quoteToEdit.value = quotesStore.userQuoteById(quoteId);
-  showCreateQuoteModal.value = true;
+  quoteToEdit.value = quotesStore.userQuoteById(quoteId)
+  showCreateQuoteModal.value = true
 }
 async function editQuote(quote: Quote) {
-  await quotesStore.editUserQuote(quote);
-  showCreateQuoteModal.value = false;
+  await quotesStore.editUserQuote(quote)
+  showCreateQuoteModal.value = false
 }
 
 // Delete quote
-const showDeleteQuoteModal = ref(false);
-const quoteToDelete = ref<Quote | undefined>(undefined);
+const showDeleteQuoteModal = ref(false)
+const quoteToDelete = ref<Quote | undefined>(undefined)
 
 async function openDeleteQuoteConfirmation(quoteId: number) {
-  quoteToDelete.value = quotesStore.userQuoteById(quoteId);
-  showDeleteQuoteModal.value = true;
+  quoteToDelete.value = quotesStore.userQuoteById(quoteId)
+  showDeleteQuoteModal.value = true
 }
 async function deleteQuote(quoteId: number | undefined) {
   if (quoteId) {
-    await quotesStore.deleteUserQuote(quoteId as number);
+    await quotesStore.deleteUserQuote(quoteId as number)
   }
-  showDeleteQuoteModal.value = false;
+  showDeleteQuoteModal.value = false
 }
 
 // window resize listener
-const windowInnerWidth = ref(window.innerWidth);
+const windowInnerWidth = ref(window.innerWidth)
 function updateWindowInnerWidth() {
-  windowInnerWidth.value = window.innerWidth;
+  windowInnerWidth.value = window.innerWidth
 }
-window.addEventListener("resize", updateWindowInnerWidth);
+window.addEventListener('resize', updateWindowInnerWidth)
 onUnmounted(() => {
-  window.removeEventListener("resize", updateWindowInnerWidth);
-});
+  window.removeEventListener('resize', updateWindowInnerWidth)
+})
 </script>

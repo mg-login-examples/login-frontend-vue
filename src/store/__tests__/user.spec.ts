@@ -1,334 +1,308 @@
-vi.mock("@/store/errors");
-vi.mock("@/api/backendApi");
-import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
-import { setActivePinia, createPinia } from "pinia";
+vi.mock('@/store/errors')
+vi.mock('@/api/backendApi')
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest'
+import { setActivePinia, createPinia } from 'pinia'
 
-import { useUserStore } from "@/store/user";
-import { useErrorsStore } from "@/store/errors";
-import backendApi from "@/api/backendApi";
-import { fakeUser, fakeUserLogin } from "@/__mocks__/data/users";
+import { useUserStore } from '@/store/user'
+import { useErrorsStore } from '@/store/errors'
+import backendApi from '@/api/backendApi'
+import { fakeUser, fakeUserLogin } from '@/__mocks__/data/users'
 
-const mockErrorsStore = { handleError: vi.fn() };
-(useErrorsStore as unknown as Mock).mockReturnValue(mockErrorsStore);
-const mockBackendApiLogin = backendApi.users.login as Mock;
-const mockBackendApiAuthenticate = backendApi.users.authenticate as Mock;
-const mockBackendApiLogout = backendApi.users.logout as Mock;
-const mockBackendApiCreateUser = backendApi.users.createUser as Mock;
-const mockBackendApiVerifyEmail = backendApi.emailVerifications
-  .verifyEmail as Mock;
-const mockBackendApiResendEmail = backendApi.emailVerifications
-  .resendEmail as Mock;
+const mockErrorsStore = { handleError: vi.fn() }
+;(useErrorsStore as unknown as Mock).mockReturnValue(mockErrorsStore)
+const mockBackendApiLogin = backendApi.users.login as Mock
+const mockBackendApiAuthenticate = backendApi.users.authenticate as Mock
+const mockBackendApiLogout = backendApi.users.logout as Mock
+const mockBackendApiCreateUser = backendApi.users.createUser as Mock
+const mockBackendApiVerifyEmail = backendApi.emailVerifications.verifyEmail as Mock
+const mockBackendApiResendEmail = backendApi.emailVerifications.resendEmail as Mock
 const mockBackendApiSendEmailWithPasswordResetLink = backendApi.users
-  .sendEmailWithPasswordResetLink as Mock;
+  .sendEmailWithPasswordResetLink as Mock
 
-describe("store > user.ts", () => {
+describe('store > user.ts', () => {
   beforeEach(() => {
     // init test pinia before tests
-    setActivePinia(createPinia());
+    setActivePinia(createPinia())
     // clear mocks
-    mockBackendApiLogin.mockReset();
-    mockBackendApiAuthenticate.mockReset();
-    mockBackendApiLogout.mockReset();
-    mockErrorsStore.handleError.mockReset();
-    mockBackendApiCreateUser.mockReset();
-    mockBackendApiVerifyEmail.mockReset();
-    mockBackendApiResendEmail.mockReset();
-    mockBackendApiSendEmailWithPasswordResetLink.mockReset();
-  });
+    mockBackendApiLogin.mockReset()
+    mockBackendApiAuthenticate.mockReset()
+    mockBackendApiLogout.mockReset()
+    mockErrorsStore.handleError.mockReset()
+    mockBackendApiCreateUser.mockReset()
+    mockBackendApiVerifyEmail.mockReset()
+    mockBackendApiResendEmail.mockReset()
+    mockBackendApiSendEmailWithPasswordResetLink.mockReset()
+  })
 
-  it("logs in user with email and password", async () => {
+  it('logs in user with email and password', async () => {
     // mock login api to return user
-    mockBackendApiLogin.mockReturnValue(fakeUser);
-    mockBackendApiAuthenticate.mockReturnValue(fakeUser);
+    mockBackendApiLogin.mockReturnValue(fakeUser)
+    mockBackendApiAuthenticate.mockReturnValue(fakeUser)
     // init user store
-    const userStore = useUserStore();
-    expect(userStore.user).toBeNull();
+    const userStore = useUserStore()
+    expect(userStore.user).toBeNull()
     // invoke store login action
-    const loginResponse = await userStore.login(
-      fakeUserLogin.email,
-      fakeUserLogin.password,
-      false
-    );
+    const loginResponse = await userStore.login(fakeUserLogin.email, fakeUserLogin.password, false)
     // assert success return
-    expect(loginResponse).toBe("success");
+    expect(loginResponse).toBe('success')
     // assert api login function called
     expect(mockBackendApiLogin).toHaveBeenCalledWith(
       fakeUserLogin.email,
       fakeUserLogin.password,
       false
-    );
+    )
     // assert api authenticate function called
-    expect(mockBackendApiAuthenticate).toHaveBeenCalled();
+    expect(mockBackendApiAuthenticate).toHaveBeenCalled()
     // assert user returned
-    expect(userStore.user).toStrictEqual(fakeUser);
-  });
+    expect(userStore.user).toStrictEqual(fakeUser)
+  })
 
-  it("handles invalid login api error", async () => {
+  it('handles invalid login api error', async () => {
     // mock api error return
-    const invalidoginAxiosError = { response: { status: 401 } };
-    mockBackendApiLogin.mockRejectedValue(invalidoginAxiosError);
+    const invalidoginAxiosError = { response: { status: 401 } }
+    mockBackendApiLogin.mockRejectedValue(invalidoginAxiosError)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store login action
-    const loginResponse = await userStore.login(
-      fakeUserLogin.email,
-      fakeUserLogin.password,
-      false
-    );
+    const loginResponse = await userStore.login(fakeUserLogin.email, fakeUserLogin.password, false)
     // assert failure return
-    expect(loginResponse).toBe("invalid login");
+    expect(loginResponse).toBe('invalid login')
     // assert error handler called with api error
-    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(
-      invalidoginAxiosError
-    );
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(invalidoginAxiosError)
     // assert user is null
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("handles auth error during login", async () => {
+  it('handles auth error during login', async () => {
     // mock login api success return
-    mockBackendApiLogin.mockReturnValue(fakeUser);
+    mockBackendApiLogin.mockReturnValue(fakeUser)
     // mock auth api error return
-    const authError = Error("auth error");
-    mockBackendApiAuthenticate.mockRejectedValue(authError);
+    const authError = Error('auth error')
+    mockBackendApiAuthenticate.mockRejectedValue(authError)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store login action
-    const loginResponse = await userStore.login(
-      fakeUserLogin.email,
-      fakeUserLogin.password,
-      false
-    );
+    const loginResponse = await userStore.login(fakeUserLogin.email, fakeUserLogin.password, false)
     // assert failure return
-    expect(loginResponse).toBe("authentication failed");
+    expect(loginResponse).toBe('authentication failed')
     // assert user is null
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("handles unknown login api error", async () => {
+  it('handles unknown login api error', async () => {
     // mock api error return
-    const loginError = Error("login error");
-    mockBackendApiLogin.mockRejectedValue(loginError);
+    const loginError = Error('login error')
+    mockBackendApiLogin.mockRejectedValue(loginError)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store login action
-    const loginResponse = await userStore.login(
-      fakeUserLogin.email,
-      fakeUserLogin.password,
-      false
-    );
+    const loginResponse = await userStore.login(fakeUserLogin.email, fakeUserLogin.password, false)
     // assert failure return
-    expect(loginResponse).toBe("unknown error");
+    expect(loginResponse).toBe('unknown error')
     // assert error handler called with api error
-    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(loginError);
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(loginError)
     // assert user is null
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("authenticates user", async () => {
+  it('authenticates user', async () => {
     // mock authenticate api to return user
-    mockBackendApiAuthenticate.mockReturnValue(fakeUser);
+    mockBackendApiAuthenticate.mockReturnValue(fakeUser)
     // init user store
-    const userStore = useUserStore();
-    expect(userStore.user).toBeNull();
+    const userStore = useUserStore()
+    expect(userStore.user).toBeNull()
     // invoke store login action
-    const authenticateResponse = await userStore.authenticate();
+    const authenticateResponse = await userStore.authenticate()
     // assert success return
-    expect(authenticateResponse).toBe(true);
+    expect(authenticateResponse).toBe(true)
     // assert api authenticate function called
-    expect(mockBackendApiAuthenticate).toHaveBeenCalled();
+    expect(mockBackendApiAuthenticate).toHaveBeenCalled()
     // assert user returned
-    expect(userStore.user).toStrictEqual(fakeUser);
-  });
+    expect(userStore.user).toStrictEqual(fakeUser)
+  })
 
-  it("handles authentication api error", async () => {
+  it('handles authentication api error', async () => {
     // mock api error return
-    const authenticateError = Error("authentication error");
-    mockBackendApiAuthenticate.mockRejectedValue(authenticateError);
+    const authenticateError = Error('authentication error')
+    mockBackendApiAuthenticate.mockRejectedValue(authenticateError)
     // init user store
-    const userStore = useUserStore();
-    expect(userStore.user).toBeNull();
+    const userStore = useUserStore()
+    expect(userStore.user).toBeNull()
     // invoke store login action
-    const authenticateResponse = await userStore.authenticate();
+    const authenticateResponse = await userStore.authenticate()
     // assert failure return
-    expect(authenticateResponse).toBe(false);
+    expect(authenticateResponse).toBe(false)
     // assert error handler not called with api error
-    expect(mockErrorsStore.handleError).not.toHaveBeenCalledWith();
+    expect(mockErrorsStore.handleError).not.toHaveBeenCalledWith()
     // assert user is null
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("logs out user", async () => {
+  it('logs out user', async () => {
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // simulate logged in user
-    userStore.user = fakeUser;
+    userStore.user = fakeUser
     // invoke store login action
-    const logoutResponse = await userStore.logout();
+    const logoutResponse = await userStore.logout()
     // assert success return
-    expect(logoutResponse).toBe(true);
+    expect(logoutResponse).toBe(true)
     // assert api authenticate function called
-    expect(mockBackendApiLogout).toHaveBeenCalled();
+    expect(mockBackendApiLogout).toHaveBeenCalled()
     // assert user is locally deleted
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("handles logout api error", async () => {
+  it('handles logout api error', async () => {
     // mock api error return
-    const logoutError = Error("logout error");
-    mockBackendApiLogout.mockRejectedValue(logoutError);
+    const logoutError = Error('logout error')
+    mockBackendApiLogout.mockRejectedValue(logoutError)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // simulate logged in user
-    userStore.user = fakeUser;
+    userStore.user = fakeUser
     // invoke store login action
-    const logoutResponse = await userStore.logout();
+    const logoutResponse = await userStore.logout()
     // assert failure return
-    expect(logoutResponse).toBe(false);
+    expect(logoutResponse).toBe(false)
     // assert error handler called with api error
-    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(logoutError);
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(logoutError)
     // assert user is locally deleted
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("creates a new user", async () => {
+  it('creates a new user', async () => {
     // mock create user api to return user
-    mockBackendApiCreateUser.mockReturnValue(fakeUser);
+    mockBackendApiCreateUser.mockReturnValue(fakeUser)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store create user action
     const createUserResponse = await userStore.createUser(
       fakeUserLogin.email,
       fakeUserLogin.password
-    );
+    )
     // assert success return
-    expect(createUserResponse).toBe(true);
+    expect(createUserResponse).toBe(true)
     // assert api authenticate function called
     expect(mockBackendApiCreateUser).toHaveBeenCalledWith({
       email: fakeUserLogin.email,
-      password: fakeUserLogin.password,
-    });
+      password: fakeUserLogin.password
+    })
     // assert user is locally deleted
-    expect(userStore.user).toStrictEqual(fakeUser);
-  });
+    expect(userStore.user).toStrictEqual(fakeUser)
+  })
 
-  it("handles user create api error", async () => {
+  it('handles user create api error', async () => {
     // mock api error return
-    const userCreateError = Error("create user error");
-    mockBackendApiCreateUser.mockRejectedValue(userCreateError);
+    const userCreateError = Error('create user error')
+    mockBackendApiCreateUser.mockRejectedValue(userCreateError)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store create user action
     const createUserResponse = await userStore.createUser(
       fakeUserLogin.email,
       fakeUserLogin.password
-    );
+    )
     // assert failure return
-    expect(createUserResponse).toBe(false);
+    expect(createUserResponse).toBe(false)
     // assert error handler called with api error
-    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(userCreateError);
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(userCreateError)
     // assert user is locally deleted
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("verifies email", async () => {
+  it('verifies email', async () => {
     // mock authenticate api to return user
-    mockBackendApiAuthenticate.mockReturnValue(fakeUser);
+    mockBackendApiAuthenticate.mockReturnValue(fakeUser)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store verify email action
-    const verificationCode = 545344;
-    const verifyEmailResponse = await userStore.verifyEmail(verificationCode);
+    const verificationCode = 545344
+    const verifyEmailResponse = await userStore.verifyEmail(verificationCode)
     // assert success return
-    expect(verifyEmailResponse).toBe(true);
+    expect(verifyEmailResponse).toBe(true)
     // assert api verify email function called
-    expect(mockBackendApiVerifyEmail).toHaveBeenCalled();
+    expect(mockBackendApiVerifyEmail).toHaveBeenCalled()
     // assert api authenticate function called
-    expect(mockBackendApiAuthenticate).toHaveBeenCalled();
+    expect(mockBackendApiAuthenticate).toHaveBeenCalled()
     // assert user returned
-    expect(userStore.user).toStrictEqual(fakeUser);
-  });
+    expect(userStore.user).toStrictEqual(fakeUser)
+  })
 
-  it("handles verify email api error", async () => {
+  it('handles verify email api error', async () => {
     // mock api error return
-    const verifyEmailError = Error("verify email error");
-    mockBackendApiVerifyEmail.mockRejectedValue(verifyEmailError);
+    const verifyEmailError = Error('verify email error')
+    mockBackendApiVerifyEmail.mockRejectedValue(verifyEmailError)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store verify email action
-    const verificationCode = 545344;
-    const verifyEmailResponse = await userStore.verifyEmail(verificationCode);
+    const verificationCode = 545344
+    const verifyEmailResponse = await userStore.verifyEmail(verificationCode)
     // assert failure return
-    expect(verifyEmailResponse).toBe(false);
+    expect(verifyEmailResponse).toBe(false)
     // assert error handler called with api error
-    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(verifyEmailError);
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(verifyEmailError)
     // assert api authenticate function not called
-    expect(mockBackendApiAuthenticate).not.toBeCalled();
+    expect(mockBackendApiAuthenticate).not.toBeCalled()
     // assert user is locally deleted
-    expect(userStore.user).toBeNull();
-  });
+    expect(userStore.user).toBeNull()
+  })
 
-  it("resends email", async () => {
+  it('resends email', async () => {
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store resend email action
-    const resendEmailResponse = await userStore.resendEmail();
+    const resendEmailResponse = await userStore.resendEmail()
     // assert success return
-    expect(resendEmailResponse).toBe(true);
+    expect(resendEmailResponse).toBe(true)
     // assert api resend email function called
-    expect(mockBackendApiResendEmail).toHaveBeenCalled();
-  });
+    expect(mockBackendApiResendEmail).toHaveBeenCalled()
+  })
 
-  it("handles resend email api error", async () => {
+  it('handles resend email api error', async () => {
     // mock api error return
-    const resendEmailError = Error("resend email error");
-    mockBackendApiResendEmail.mockRejectedValue(resendEmailError);
+    const resendEmailError = Error('resend email error')
+    mockBackendApiResendEmail.mockRejectedValue(resendEmailError)
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store resend email action
-    const resendEmailResponse = await userStore.resendEmail();
+    const resendEmailResponse = await userStore.resendEmail()
     // assert failure return
-    expect(resendEmailResponse).toBe(false);
+    expect(resendEmailResponse).toBe(false)
     // assert error handler called with api error
-    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(resendEmailError);
-  });
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(resendEmailError)
+  })
 
-  it("sends email with password reset link", async () => {
+  it('sends email with password reset link', async () => {
     // init test values
-    const testEmail = "test@email.com";
+    const testEmail = 'test@email.com'
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store send email with password reset link action
     const sendEmailWithPasswordResetLinkResponse =
-      await userStore.sendEmailWithPasswordResetLink(testEmail);
+      await userStore.sendEmailWithPasswordResetLink(testEmail)
     // assert success return
-    expect(sendEmailWithPasswordResetLinkResponse).toBe(true);
+    expect(sendEmailWithPasswordResetLinkResponse).toBe(true)
     // assert api resend email function called
-    expect(mockBackendApiSendEmailWithPasswordResetLink).toHaveBeenCalledWith(
-      testEmail
-    );
-  });
+    expect(mockBackendApiSendEmailWithPasswordResetLink).toHaveBeenCalledWith(testEmail)
+  })
 
-  it("handles send email with password reset link api error", async () => {
+  it('handles send email with password reset link api error', async () => {
     // init test values
-    const testEmail = "test@email.com";
+    const testEmail = 'test@email.com'
     // mock api error return
-    const sendEmailWithPasswordResetLinkError = Error(
-      "send email with password reset link error"
-    );
+    const sendEmailWithPasswordResetLinkError = Error('send email with password reset link error')
     mockBackendApiSendEmailWithPasswordResetLink.mockRejectedValue(
       sendEmailWithPasswordResetLinkError
-    );
+    )
     // init user store
-    const userStore = useUserStore();
+    const userStore = useUserStore()
     // invoke store resend email action
     const sendEmailWithPasswordResetLinkResponse =
-      await userStore.sendEmailWithPasswordResetLink(testEmail);
+      await userStore.sendEmailWithPasswordResetLink(testEmail)
     // assert failure return
-    expect(sendEmailWithPasswordResetLinkResponse).toBe(false);
+    expect(sendEmailWithPasswordResetLinkResponse).toBe(false)
     // assert error handler called with api error
-    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(
-      sendEmailWithPasswordResetLinkError
-    );
-  });
-});
+    expect(mockErrorsStore.handleError).toHaveBeenCalledWith(sendEmailWithPasswordResetLinkError)
+  })
+})
