@@ -1,0 +1,17 @@
+name: Lint Check
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  code-check:
+    name: Run lint and type-check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v3
+      - name: Run frontend lint check
+        run: sudo ./scripts_docker.sh frontend lint-check
+      - name: Run frontend type check
+        run: sudo ./scripts_docker.sh frontend type-check

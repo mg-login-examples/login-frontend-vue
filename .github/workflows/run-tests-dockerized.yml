@@ -1,0 +1,17 @@
+name: Run Tests With Docker
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  frontend-unit-tests:
+    name: Run Frontend module's unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v3
+      - name: Run frontend unit tests
+        run: sudo ./scripts_docker.sh frontend unit-tests
+
+    # TODO add jobs for playwright tests, cypress tests
