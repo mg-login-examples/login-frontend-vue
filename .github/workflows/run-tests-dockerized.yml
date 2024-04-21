@@ -45,6 +45,11 @@ jobs:
     steps:
       - name: Checkout the files
         uses: actions/checkout@v3
+      - name: Checkout backend repo
+        uses: actions/checkout@v3
+        with:
+          repository: mg-login-examples/login-backend-fastapi
+          path: backend
       - name: Add mysql password text file for a test mysql container
         run: echo "password_1" > backend/docker_secrets/mysql_pwd.txt
       - name: Add mongo password text file for a test mongo container
