@@ -82,7 +82,9 @@ then
   docker-compose -f docker-compose.yml -f compose-files/compose.vueapp_static.yml -p frontend up --build -d
 elif [ $case = "run-e2e-tests-cypress" ]
 then
-  setup_backend
+  BACKEND_ADMIN_USER_EMAIL="test_admin@fakemail.com"
+  BACKEND_ADMIN_USER_PASSWORD="secretpwd"
+  setup_backend $BACKEND_ADMIN_USER_EMAIL $BACKEND_ADMIN_USER_PASSWORD
   # remove existing containers, otherwise error "dependency failed to start: container backend-fastapi-run-xxx exited (0)"
   docker_down_all_containers
   # Set env vars
@@ -111,7 +113,9 @@ then
   docker-compose -f docker-compose.yml -f compose-files/compose.cypress.yml -f compose-files/compose.vueapp_compiled.yml -f compose-files/compose.fastapi.yml -f compose-files/compose.mysql.yml -f compose-files/compose.mongo.yml -f compose-files/compose.redis.yml -f compose-files/compose.full_app_proxy.yml -p frontend run vueapp_test_e2e_cypress npm run test-e2e-cypress
 elif [ $case = "run-e2e-tests-playwright" ]
 then
-  setup_backend
+  BACKEND_ADMIN_USER_EMAIL="test_admin@fakemail.com"
+  BACKEND_ADMIN_USER_PASSWORD="secretpwd"
+  setup_backend $BACKEND_ADMIN_USER_EMAIL $BACKEND_ADMIN_USER_PASSWORD
   # remove existing containers, otherwise error "dependency failed to start: container backend-fastapi-run-xxx exited (0)"
   docker_down_all_containers
   # Set env vars
