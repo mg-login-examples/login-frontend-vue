@@ -22,7 +22,7 @@ export class LoginWebAppUserFactory {
   }
 
   async getRandomUser() {
-    const randomEmail = casual.email
+    const randomEmail = casual.email.toLowerCase()
     const randomPasssword = casual.password
     const userName = randomEmail
     await DataSetterHelpers.createUserIfNoUserExists(randomEmail, randomPasssword)

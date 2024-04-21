@@ -4,23 +4,24 @@ services:
   vueapp_static:
     build:
       context: .
-      target: serve-static-stage
+      target: serve-nginx-stage
+      # target: serve-nginx-stage
       args:
         VITE_MODE: ${VITE_MODE}
         VITE_APP_BACKEND_URL: ${VITE_APP_BACKEND_URL}
         VITE_APP_BACKEND_WEBSOCKET_URL: ${VITE_APP_BACKEND_WEBSOCKET_URL}
         VITE_LOG_ENV_VARS: ${VITE_LOG_ENV_VARS}
     ports:
-      - 8010:80
+      - 8019:80
     networks:
       - traefik-public
     restart: always
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`frontend.${PRIMARY_DOMAIN}`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls=true"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.frontend.rule=Host(`frontend.${PRIMARY_DOMAIN}`)'
+      - 'traefik.http.routers.frontend.entrypoints=websecure'
+      - 'traefik.http.routers.frontend.tls=true'
+      - 'traefik.http.routers.frontend.tls.certresolver=myresolver'
     # depends_on:
     #   fastapi:
     #     condition: service_healthy

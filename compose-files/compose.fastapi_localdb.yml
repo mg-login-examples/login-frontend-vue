@@ -6,14 +6,12 @@ services:
     tty: true # enables colored log # docker run -t
     stdin_open: false # enables colored log # docker run -i
     build:
-      context: ./backend/src/
+      context: ./backend/
     networks:
       - backend
       - fullstack_proxy
       - traefik-public
     depends_on:
-      mysql_db:
-        condition: service_healthy
       mongo_db:
         condition: service_healthy
       redis_cache:
@@ -25,11 +23,10 @@ services:
       - ./backend/app.log:/app.log
       - ./backend/app-tests.log:/app-tests.log
     secrets:
-      - mysql-password
       - mongo-password
       - redis-pass
     environment:
-      - DATABASE_URL=${DATABASE_URL:-mysql+pymysql://root@mysql_db/login}
+      - DATABASE_URL
       - DATABASE_USER
       - DATABASE_PASSWORD
       - CHECK_SQL_DB_CONNECTION_ON_APP_START=True
@@ -39,11 +36,11 @@ services:
       - MONGO_PASSWORD
       - USE_IN_MEMORY_MONGO_DB=False
       - CHECK_MONGO_DB_CONNECTION_ON_APP_START=True
-      - ACCESS_TOKENS_STORE_TYPE=${ACCESS_TOKENS_STORE_TYPE:-redis}
-      - REDIS_URL=${REDIS_URL:-redis://redis_cache}
+      - ACCESS_TOKENS_STORE_TYPE
+      - REDIS_URL
       - REDIS_PASSWORD
-      - CHECK_REDIS_CONNECTION_ON_APP_START=True
-      - PUBSUB_URL=${PUBSUB_URL:-redis://redis_cache}
+      - CHECK_REDIS_CONNECTION_ON_APP_START
+      - PUBSUB_URL
       - CORS_ORIGINS_SET=${CORS_ORIGINS_SET:-Development}
       - USER_AUTH_COOKIE_TYPE=${USER_AUTH_COOKIE_TYPE:-localhost_development}
       - ADMIN_USER_AUTH_COOKIE_TYPE=${ADMIN_USER_AUTH_COOKIE_TYPE:-localhost_development}
@@ -56,7 +53,6 @@ services:
       # test: wget --no-verbose --tries=1 -O /dev/null http://localhost:8018/docs
       test: wget --no-verbose --tries=1 --spider http://localhost:8018/api/health-check/
       timeout: 20s
-      interval: 10s
       retries: 10
     labels:
       - 'traefik.enable=true'

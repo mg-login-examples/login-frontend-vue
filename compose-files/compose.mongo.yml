@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   mongo_db:
+    restart: always
     image: mongo:latest
+    command: mongod --quiet --logpath /dev/null
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME-root_user}
       - MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/mongo-password
@@ -13,15 +15,13 @@ services:
       - 27017:27017
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/login --quiet
-      timeout: 10s
-      retries: 5
+      # interval: 10s
+      timeout: 20s
+      retries: 10
     networks:
       - backend
     volumes:
       - mongo-data:/data/db
-      - mongo-config:/data/configdb
-    logging:
-      driver: none 
 
 volumes:
   mongo-data:

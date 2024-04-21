@@ -1,13 +1,11 @@
-import { Given, Before } from '@badeball/cypress-cucumber-preprocessor'
+import { Before, Given } from '@badeball/cypress-cucumber-preprocessor'
 
-import { getValueFromStore } from '../testDataStore/store'
 import CyDataSetterHelpers from '../dataHelpers/cy-data-setter.helpers'
+import { getValueFromStore } from '../testDataStore/store'
 
 Before(() => {
   cy.visit('/')
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  cy.clearCookies({ domain: null })
+  cy.clearCookies()
   cy.reload()
 })
 

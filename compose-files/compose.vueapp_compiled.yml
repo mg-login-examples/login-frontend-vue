@@ -4,7 +4,7 @@ services:
   vueapp_dev:
     build:
       context: .
-      target: serve-local-stage
+      target: serve-stage
       args:
         VITE_MODE: ${VITE_MODE}
         VITE_APP_BACKEND_URL: ${VITE_APP_BACKEND_URL}
@@ -23,8 +23,8 @@ services:
     #   fastapi:
     #     condition: service_healthy
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:5173
-      # test: wget --no-verbose --tries=1 -O /dev/null http://localhost:5173
+      # test: wget --no-verbose --tries=1 --spider http://localhost:5173
+      test: wget --no-verbose --tries=1 -O /dev/null http://localhost:5173
       interval: 60s
       timeout: 10s
       retries: 10

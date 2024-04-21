@@ -1,58 +1,66 @@
-import { defineConfig } from 'cypress'
 import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor'
-import browserify from '@badeball/cypress-cucumber-preprocessor/browserify'
-import { secrets } from 'docker-secret'
-// import allureWriter from "@shelex/cypress-allure-plugin/writer";
-const allureWriter = require('@shelex/cypress-allure-plugin/writer')
+import { createEsbuildPlugin } from '@badeball/cypress-cucumber-preprocessor/esbuild'
+import createBundler from '@bahmutov/cypress-esbuild-preprocessor'
+import allureWriter from '@shelex/cypress-allure-plugin/writer'
+import { defineConfig } from 'cypress'
+import { getSecrets } from 'docker-secret'
+import { readFileSync } from 'fs'
 
-async function setupNodeEvents(
-  on: Cypress.PluginEvents,
-  config: Cypress.PluginConfigOptions
-): Promise<Cypress.PluginConfigOptions> {
-  // This is required for the preprocessor to be able to generate JSON reports after each run, and more,
-  await addCucumberPreprocessorPlugin(on, config)
-
-  on(
-    'file:preprocessor',
-    browserify(config, {
-      typescript: require.resolve('typescript')
-    })
-  )
-
-  // on("before:browser:launch", (browser, launchOptions) => {
-  //   if (browser.family === "chromium") {
-  //     launchOptions.args.push(
-  //       "--disable-features=CookiesWithoutSameSiteMustBeSecure"
-  //     );
-  //   }
-  //   return launchOptions;
-  // });
-
-  allureWriter(on, config)
-
-  // Make sure to return the config object as it might have been modified by the plugin.
-  return config
+type Secrets = {
+  mailslurp_api_key: string
 }
+
+export function getCypressSecrets(): Secrets {
+  const secrets = getSecrets<Secrets>()
+  if (!secrets.mailslurp_api_key) {
+    const mailslurp_api_key = readFileSync('./docker_secrets/mailslurp_api_key.txt', {
+      encoding: 'utf8',
+      flag: 'r'
+    })
+    secrets.mailslurp_api_key = mailslurp_api_key
+  }
+  return secrets
+}
+
+const secrets = getCypressSecrets()
 
 export default defineConfig({
   e2e: {
-    // specPattern: "cypress/e2e/**/*.{cy,spec}.{js,jsx,ts,tsx}",
-    specPattern: '**/*.feature',
-    baseUrl: 'http://localhost:4173',
-    setupNodeEvents
-  },
-  env: {
-    allure: true,
-    allureResultsPath: 'cypress/allure-results',
-    MAILSLURP_API_KEY: secrets.mailslurp_api_key,
-    apiUrl: 'http://localhost:8018/api',
-    adminApiUrl: 'http://localhost:8018/api/admin',
-    adminApiLoginUsername: 'admin@admin.admin',
-    adminApiLoginPassword: 'admin',
-    filterSpecs: true
-    // tags: "@logout",
-  },
-  video: false
-  // videoCompression: false,
-  // timeout: 100000,
+    specPattern: 'cypress/**/*.feature',
+    baseUrl: 'http://localhost:5173',
+    async setupNodeEvents(
+      on: Cypress.PluginEvents,
+      config: Cypress.PluginConfigOptions
+    ): Promise<Cypress.PluginConfigOptions> {
+      // This is required for the preprocessor to be able to generate JSON reports after each run, and more,
+      await addCucumberPreprocessorPlugin(on, config)
+
+      on(
+        'file:preprocessor',
+        createBundler({
+          plugins: [createEsbuildPlugin(config)]
+        })
+      )
+
+      allureWriter(on, config)
+
+      // Make sure to return the config object as it might have been modified by the plugin.
+      return config
+    },
+    env: {
+      allure: true,
+      allureResultsPath: 'cypress/allure-results',
+      allureReuseAfterSpec: true,
+      MAILSLURP_API_KEY: secrets.mailslurp_api_key,
+      apiUrl: 'http://localhost:8018/api',
+      adminApiUrl: 'http://localhost:8018/api/admin',
+      adminApiLoginUsername: 'admin@admin.admin',
+      adminApiLoginPassword: 'admin',
+      filterSpecs: true,
+      tags: '@signup'
+    },
+    video: false
+    // videoCompression: false,
+    // timeout: 100000,
+  }
 })

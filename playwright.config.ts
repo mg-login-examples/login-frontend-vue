@@ -56,13 +56,13 @@ const config: PlaywrightTestConfig = {
       : 'http://localhost:5173',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on-first-retry'
 
     /* Capture screenshot when test fails. See https://playwright.dev/docs/test-configuration#automatic-screenshots */
     // screenshot: "only-on-failure",
 
-    /* Only on CI systems run the tests headless */
-    headless: !!process.env.CI
+    // /* Only on CI systems run the tests headless */
+    // headless: !!process.env.CI
 
     // launchOptions: {
     //   slowMo: 100,

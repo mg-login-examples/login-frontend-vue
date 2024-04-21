@@ -1,16 +1,17 @@
 // Note values in this store object should never be changed
 // This store is used by all cucumber tests where such data is required that is different for every test run
-import casual from 'casual'
+// import casual from 'casual'
+import { randPhrase } from '@ngneat/falso'
 
 const RandomValueStore = {
-  'random > my quote > create quote': casual.sentence,
-  'random > my quote > to edit quote': casual.sentence,
-  'random > my quote > edited quote': casual.sentence,
-  'random > my quote > delete quote': casual.sentence,
-  'random > all quotes > like quote': casual.sentence,
-  'random > all quotes > unlike quote': casual.sentence,
-  'random > user notes > create note': casual.sentence,
-  'random > user notes > edit note': casual.sentence
+  'random > my quote > create quote': randPhrase(),
+  'random > my quote > to edit quote': randPhrase(),
+  'random > my quote > edited quote': randPhrase(),
+  'random > my quote > delete quote': randPhrase(),
+  'random > all quotes > like quote': randPhrase(),
+  'random > all quotes > unlike quote': randPhrase(),
+  'random > user notes > create note': randPhrase(),
+  'random > user notes > edit note': randPhrase()
 }
 
 const WebpageValueStore = {

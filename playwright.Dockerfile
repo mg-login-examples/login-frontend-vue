@@ -1,13 +1,16 @@
-FROM mcr.microsoft.com/playwright:v1.28.0 as install-stage
+FROM node:20-bookworm as install-stage
+RUN npx -y playwright@1.43.0 install --with-deps
+RUN npm -g install pnpm
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+COPY package.json pnpm-lock.yaml ./
+
+# RUN pnpm install
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN npx playwright install --with-deps
+RUN pnpm playwright install --with-deps
 
-
-CMD [ "npm", "run", "test:e2e:playwright"]
+CMD [ "npm", "run", "test-e2e-playwright"]
