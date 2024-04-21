@@ -1,8 +1,5 @@
 <template inheritAttrs="false">
-  <div
-    class="bg-slate-200 dark:bg-slate-700 relative"
-    :data-test="$attrs['data-test-container']"
-  >
+  <div class="bg-slate-200 dark:bg-slate-700 relative" :data-test="$attrs['data-test-container']">
     <div
       v-if="inputIcon"
       class="absolute left-0 top-0 bottom-0 opacity-50 flex items-center justify-center w-8 pointer-events-none"
@@ -23,9 +20,7 @@
     </button>
     <input
       :value="modelValue"
-      @input="
-        $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-      "
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       :type="showPassword ? 'text' : type"
       :placeholder="placeholder"
       :autocomplete="autocomplete"
@@ -39,25 +34,25 @@
 
 <script lang="ts">
 export default {
-  inheritAttrs: false,
-};
+  inheritAttrs: false
+}
 </script>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
 defineProps<{
-  modelValue: string;
-  inputIcon?: string;
-  placeholder?: string;
-  type?: string;
-  autocomplete?: string;
-}>();
+  modelValue: string
+  inputIcon?: string
+  placeholder?: string
+  type?: string
+  autocomplete?: string
+}>()
 
-defineEmits<{ (e: "update:modelValue", value: string): void }>();
+defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
-const showPassword = ref(false);
+const showPassword = ref(false)
 function togglePasswordVisibility() {
-  showPassword.value = !showPassword.value;
+  showPassword.value = !showPassword.value
 }
 </script>

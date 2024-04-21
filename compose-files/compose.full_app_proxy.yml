@@ -7,6 +7,8 @@ services:
       args:
         NGINX_FILENAME: ${NGINX_FILENAME:-nginx-launch-app.conf}
     ports:
+      - 8028:8028
+      - 8029:8029
       - 8030:8030
     restart: always
     networks:
@@ -25,4 +27,4 @@ services:
       timeout: 10s
       retries: 10
     logging:
-      driver: none 
+      driver: none

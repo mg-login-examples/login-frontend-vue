@@ -1,4 +1,4 @@
 export interface SocketReceiveChannelSubscriptionStatus {
-  channel: string;
-  subscribed: boolean;
+  channel: string
+  subscribed: boolean
 }

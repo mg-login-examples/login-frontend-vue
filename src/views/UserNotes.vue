@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="flex h-full"
-    :class="activateMobileDisplay ? 'flex-col' : 'flex-row'"
-  >
+  <div class="flex h-full" :class="activateMobileDisplay ? 'flex-col' : 'flex-row'">
     <NotesLeftPanel
       :activateMobileDisplay="activateMobileDisplay"
       :showNotesListMobileDisplay="showNotesListMobileDisplay"
@@ -19,54 +16,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onUnmounted } from "vue";
+import { ref, onUnmounted } from 'vue'
 
-import NotesLeftPanel from "@/components/Notes/NotesLeftPanel.vue";
-import OpenNote from "@/components/Notes/OpenNote.vue";
-import { useUserNotesStore } from "@/store/user-notes";
-import { useUserStore } from "@/store/user";
-import type { UserNote } from "@/models/user-note.model";
-import type { UserNoteCreate } from "@/models/user-note-create.model";
+import NotesLeftPanel from '@/components/Notes/NotesLeftPanel.vue'
+import OpenNote from '@/components/Notes/OpenNote.vue'
+import { useUserNotesStore } from '@/store/user-notes'
+import { useUserStore } from '@/store/user'
+import type { UserNote } from '@/models/user-note.model'
+import type { UserNoteCreate } from '@/models/user-note-create.model'
 
-const userStore = useUserStore();
-const userNotesStore = useUserNotesStore();
+const userStore = useUserStore()
+const userNotesStore = useUserNotesStore()
 
-userNotesStore.getUserNotes();
+userNotesStore.getUserNotes()
 
-const showNotesListMobileDisplay = ref(false);
+const showNotesListMobileDisplay = ref(false)
 function toggleShowNotesList() {
-  showNotesListMobileDisplay.value = !showNotesListMobileDisplay.value;
+  showNotesListMobileDisplay.value = !showNotesListMobileDisplay.value
 }
 
 // Create/Edit note
-const selectedUserNote = ref<UserNote | UserNoteCreate | undefined>(undefined);
+const selectedUserNote = ref<UserNote | UserNoteCreate | undefined>(undefined)
 
 async function openNewUserNote() {
   if (userStore.user) {
     selectedUserNote.value = {
-      title: "",
-      text: "",
-      user_id: userStore.user.id,
-    };
-    showNotesListMobileDisplay.value = false;
+      title: '',
+      text: '',
+      user_id: userStore.user.id
+    }
+    showNotesListMobileDisplay.value = false
   }
 }
 
 function openUserNote(userNoteId: string) {
-  const userNote = userNotesStore.userNoteById(userNoteId);
+  const userNote = userNotesStore.userNoteById(userNoteId)
   if (userNote) {
-    selectedUserNote.value = { ...userNote };
+    selectedUserNote.value = { ...userNote }
   }
-  showNotesListMobileDisplay.value = false;
+  showNotesListMobileDisplay.value = false
 }
 
 // window resize listener
-const activateMobileDisplay = ref(window.innerWidth < 600);
+const activateMobileDisplay = ref(window.innerWidth < 600)
 function updateActivateMobileDisplay() {
-  activateMobileDisplay.value = window.innerWidth < 600;
+  activateMobileDisplay.value = window.innerWidth < 600
 }
-window.addEventListener("resize", updateActivateMobileDisplay);
+window.addEventListener('resize', updateActivateMobileDisplay)
 onUnmounted(() => {
-  window.removeEventListener("resize", updateActivateMobileDisplay);
-});
+  window.removeEventListener('resize', updateActivateMobileDisplay)
+})
 </script>

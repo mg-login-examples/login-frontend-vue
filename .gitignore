@@ -27,6 +27,8 @@ coverage
 *.sln
 *.sw?
 
+*.tsbuildinfo
+
 cypress.env.json
 allure-results
 coverage

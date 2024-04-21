@@ -1,28 +1,28 @@
-import { describe, it, expect, vi } from "vitest";
-import { mount } from "@vue/test-utils";
-import { createTestingPinia } from "@pinia/testing";
+import { describe, it, expect, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { createTestingPinia } from '@pinia/testing'
 
-import UserNotes from "@/views/UserNotes.vue";
-import { useUserNotesStore } from "@/store/user-notes";
+import UserNotes from '@/views/UserNotes.vue'
+import { useUserNotesStore } from '@/store/user-notes'
 
-describe("views > UserNotes.vue", () => {
-  it("on init, calls user notes store action to fetch all user notes", async () => {
+describe('views > UserNotes.vue', () => {
+  it('on init, calls user notes store action to fetch all user notes', async () => {
     // init store
-    const testPinia = createTestingPinia({ createSpy: vi.fn });
-    const userNotesStore = useUserNotesStore();
-    userNotesStore.getUserNotes = vi.fn();
+    const testPinia = createTestingPinia({ createSpy: vi.fn })
+    const userNotesStore = useUserNotesStore()
+    userNotesStore.getUserNotes = vi.fn()
     // assert get user notes action not called before component is mounted
-    expect(userNotesStore.getUserNotes).not.toBeCalled();
+    expect(userNotesStore.getUserNotes).not.toBeCalled()
     // mount component
     mount(UserNotes, {
       global: {
-        stubs: ["UserNote", "FontAwesomeIcon"],
-        plugins: [testPinia],
-      },
-    });
+        stubs: ['UserNote', 'FontAwesomeIcon'],
+        plugins: [testPinia]
+      }
+    })
     // assert get user notes action called
-    expect(userNotesStore.getUserNotes).toBeCalled();
-  });
+    expect(userNotesStore.getUserNotes).toBeCalled()
+  })
 
   // TODO
   // Test on mount, component NotesLeftPanel prop activateMobileDisplay value true or false based on window width
@@ -39,4 +39,4 @@ describe("views > UserNotes.vue", () => {
   // TODO
   // Test given list of 3 user notes, when event "openUserNote" emitted with user note id by component NotesLeftPanel,
   // prop selectedUserNote on component OpenNote set to user note with id
-});
+})

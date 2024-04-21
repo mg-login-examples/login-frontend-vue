@@ -26,20 +26,20 @@
 </template>
 
 <script setup lang="ts">
-import type { Quote } from "@/models/quote.model";
+import type { Quote } from '@/models/quote.model'
 
 const props = defineProps<{
-  quote?: Quote;
-}>();
+  quote?: Quote
+}>()
 
 function deleteQuote() {
-  emit("deleteQuote", props.quote?.id);
+  emit('deleteQuote', props.quote?.id)
 }
 function cancel() {
-  emit("cancelDeleteQuote");
+  emit('cancelDeleteQuote')
 }
 const emit = defineEmits<{
-  (e: "deleteQuote", quoteId: number | undefined): void;
-  (e: "cancelDeleteQuote"): void;
-}>();
+  (e: 'deleteQuote', quoteId: number | undefined): void
+  (e: 'cancelDeleteQuote'): void
+}>()
 </script>

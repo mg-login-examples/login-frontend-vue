@@ -1,15 +1,8 @@
 <template>
-  <MenuAttached
-    v-model="searchMenuOpen"
-    :widthSameAsMenuButton="true"
-    :class="$attrs.class"
-  >
+  <MenuAttached v-model="searchMenuOpen" :widthSameAsMenuButton="true" :class="$attrs.class">
     <div
       class="flex flex-wrap relative cursor-text"
-      :class="[
-        $attrs['class-select-field'],
-        getDynamicMultiSelectContainerClasses(),
-      ]"
+      :class="[$attrs['class-select-field'], getDynamicMultiSelectContainerClasses()]"
       :data-test="$attrs['data-test-container']"
       @click="openSearchMenu"
       @mouseenter="multiSelectHovered = true"
@@ -32,7 +25,7 @@
                 :class="index + 1 === modelValue.length ? 'mr-2' : ''"
               >
                 {{ getItemDisplayValue(selectedValue) }}
-                {{ index + 1 === modelValue.length ? "" : "," }}
+                {{ index + 1 === modelValue.length ? '' : ',' }}
               </span>
               <span
                 v-if="chips"
@@ -77,9 +70,7 @@
           </div>
         </div>
         <div
-          v-if="
-            !isLoading && (filteredItems.length === 0 || items.length === 0)
-          "
+          v-if="!isLoading && (filteredItems.length === 0 || items.length === 0)"
           class="text-slate-500 dark:text-slate-500 hover:bg-slate-300 hover:dark:bg-slate-600 px-4 py-2"
         >
           No items found
@@ -106,175 +97,167 @@
 
 <script lang="ts">
 export default {
-  inheritAttrs: false,
-};
+  inheritAttrs: false
+}
 </script>
 
 <script setup lang="ts">
-import { ref, unref, computed } from "vue";
+import { ref, unref, computed } from 'vue'
 
-import MenuAttached from "@/components/generic/menu/MenuAttached.vue";
-import { debounce } from "@/utils/commonUtils/debounce";
+import MenuAttached from '@/components/generic/menu/MenuAttached.vue'
+import { debounce } from '@/utils/commonUtils/debounce'
 
 export interface Props {
-  modelValue: any;
-  multiple?: boolean;
-  search?: string;
-  resetSearchOnMenuAction?: boolean;
-  clearable?: boolean;
-  inputIcon?: string;
-  placeholder?: string;
-  items: any[];
-  itemKey?: string;
-  itemDisplay?: string | Function;
-  isLoading?: boolean;
-  debounceSearch?: boolean;
-  chips?: boolean;
-  filterItems?: boolean;
+  modelValue: any
+  multiple?: boolean
+  search?: string
+  resetSearchOnMenuAction?: boolean
+  clearable?: boolean
+  inputIcon?: string
+  placeholder?: string
+  items: any[]
+  itemKey?: string
+  itemDisplay?: string | Function
+  isLoading?: boolean
+  debounceSearch?: boolean
+  chips?: boolean
+  filterItems?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  search: "",
+  search: '',
   isLoading: false,
-  multiple: false,
-});
+  multiple: false
+})
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: any): void;
-  (e: "update:search", value: string): void;
-  (e: "searchUpdatedDebounced"): void;
-}>();
+  (e: 'update:modelValue', value: any): void
+  (e: 'update:search', value: string): void
+  (e: 'searchUpdatedDebounced'): void
+}>()
 
-const multiSelectFocused = ref(false);
-const multiSelectHovered = ref(false);
+const multiSelectFocused = ref(false)
+const multiSelectHovered = ref(false)
 
 function getDynamicMultiSelectContainerClasses() {
   if (multiSelectFocused.value) {
-    return "bg-slate-300 dark:bg-slate-700";
+    return 'bg-slate-300 dark:bg-slate-700'
   }
   if (multiSelectHovered.value) {
-    return "bg-slate-300/70 dark:bg-slate-700/70";
+    return 'bg-slate-300/70 dark:bg-slate-700/70'
   }
-  return "bg-slate-200 dark:bg-slate-800";
+  return 'bg-slate-200 dark:bg-slate-800'
 }
 
-const searchMenuOpen = ref(false);
+const searchMenuOpen = ref(false)
 
 function openSearchMenu() {
-  searchMenuOpen.value = true;
+  searchMenuOpen.value = true
 }
 
 const debounceSearchEntered = debounce(() => {
-  emit("searchUpdatedDebounced");
-}, 1000);
+  emit('searchUpdatedDebounced')
+}, 1000)
 
 function onSearchInput(event: Event) {
-  emit("update:search", (event.target as HTMLInputElement).value);
-  debounceSearchEntered();
-  openSearchMenu();
+  emit('update:search', (event.target as HTMLInputElement).value)
+  debounceSearchEntered()
+  openSearchMenu()
 }
 
 const filteredItems = computed(() => {
   if (props.filterItems) {
-    return props.items.filter((item) =>
-      getItemDisplayValue(item).includes(props.search)
-    );
+    return props.items.filter((item) => getItemDisplayValue(item).includes(props.search))
   } else {
-    return props.items;
+    return props.items
   }
-});
+})
 
 function isSelected(itemIndex: number) {
-  const alreadySelectedItems = unref(props.modelValue) as any[];
+  const alreadySelectedItems = unref(props.modelValue) as any[]
   if (alreadySelectedItems && Array.isArray(alreadySelectedItems)) {
-    const item = filteredItems.value[itemIndex];
+    const item = filteredItems.value[itemIndex]
     if (props.itemKey) {
       const alreadySelectedItemsKeys = alreadySelectedItems.map(
         (item) => item[props.itemKey as string]
-      );
-      return alreadySelectedItemsKeys.includes(item[props.itemKey]);
+      )
+      return alreadySelectedItemsKeys.includes(item[props.itemKey])
     }
-    return alreadySelectedItems.includes(item);
+    return alreadySelectedItems.includes(item)
   }
-  return false;
+  return false
 }
 
 function selectItem(itemIndex: number) {
-  const itemSelected = filteredItems.value[itemIndex];
+  const itemSelected = filteredItems.value[itemIndex]
   if (!props.multiple) {
     // if single select
-    emit("update:modelValue", itemSelected);
+    emit('update:modelValue', itemSelected)
   } else {
     // if multi select
-    const alreadySelectedItems = unref(props.modelValue) as any[];
+    const alreadySelectedItems = unref(props.modelValue) as any[]
     if (!alreadySelectedItems) {
       // if modelValue undefined
-      emit("update:modelValue", [itemSelected]);
+      emit('update:modelValue', [itemSelected])
     } else {
       // if modelValue an array
       if (props.itemKey) {
-        const itemkey = props.itemKey as string;
-        const alreadySelectedItemsKeys = alreadySelectedItems.map(
-          (item) => item[itemkey]
-        );
-        if (
-          (alreadySelectedItemsKeys as any[]).includes(itemSelected[itemkey])
-        ) {
+        const itemkey = props.itemKey as string
+        const alreadySelectedItemsKeys = alreadySelectedItems.map((item) => item[itemkey])
+        if ((alreadySelectedItemsKeys as any[]).includes(itemSelected[itemkey])) {
           // if selectedItem already selected, then unselect it
           const updatedItems = alreadySelectedItems.filter(
             (item) => item[itemkey] !== itemSelected[itemkey]
-          );
-          emit("update:modelValue", updatedItems);
+          )
+          emit('update:modelValue', updatedItems)
         } else {
           // if selectedItem not already select, add it
-          const updatedItems = [...alreadySelectedItems, itemSelected];
-          emit("update:modelValue", updatedItems);
+          const updatedItems = [...alreadySelectedItems, itemSelected]
+          emit('update:modelValue', updatedItems)
         }
       } else {
         if ((alreadySelectedItems as any[]).includes(itemSelected)) {
           // if selectedItem already selected, then unselect it
-          const updatedItems = alreadySelectedItems.filter(
-            (item) => item !== itemSelected
-          );
-          emit("update:modelValue", updatedItems);
+          const updatedItems = alreadySelectedItems.filter((item) => item !== itemSelected)
+          emit('update:modelValue', updatedItems)
         } else {
           // if selectedItem not already select, add it
-          const updatedItems = [...alreadySelectedItems, itemSelected];
-          emit("update:modelValue", updatedItems);
+          const updatedItems = [...alreadySelectedItems, itemSelected]
+          emit('update:modelValue', updatedItems)
         }
       }
     }
   }
   // close menu after action
-  searchMenuOpen.value = false;
+  searchMenuOpen.value = false
   // keep focus on input
-  input.value?.focus();
+  input.value?.focus()
   // reset search
   if (props.resetSearchOnMenuAction) {
-    emit("update:search", "");
+    emit('update:search', '')
   }
 }
 
 function getItemDisplayValue(item: any) {
   if (props.itemDisplay) {
-    if (typeof props.itemDisplay === "function") {
-      return props.itemDisplay(item);
+    if (typeof props.itemDisplay === 'function') {
+      return props.itemDisplay(item)
     } else {
-      return item[props.itemDisplay];
+      return item[props.itemDisplay]
     }
   }
-  return item;
+  return item
 }
 
-const input = ref<InstanceType<typeof HTMLElement>>();
+const input = ref<InstanceType<typeof HTMLElement>>()
 
 function clearItems() {
   if (props.multiple) {
-    emit("update:modelValue", []);
-    input.value?.focus();
+    emit('update:modelValue', [])
+    input.value?.focus()
   } else {
-    emit("update:modelValue", undefined);
-    input.value?.focus();
+    emit('update:modelValue', undefined)
+    input.value?.focus()
   }
 }
 </script>

@@ -1,39 +1,38 @@
-import { describe, it, expect } from "vitest";
-import { mount } from "@vue/test-utils";
+import { describe, it, expect } from 'vitest'
+import { mount } from '@vue/test-utils'
 
-import QuoteDelete from "@/components/Quotes/QuoteDelete.vue";
-import { fakeQuote } from "@/__mocks__/data/quotes";
+import QuoteDelete from '@/components/Quotes/QuoteDelete.vue'
+import { fakeQuote } from '@/__mocks__/data/quotes'
 
 const selectors = {
   quoteText: "[data-test='user-quote--delete-quote--quote-text']",
   cancelButton: "[data-test='user-quote--delete-quote--cancel-button']",
-  deleteQuoteButton:
-    "[data-test='user-quote--delete-quote--delete-quote-button']",
-};
+  deleteQuoteButton: "[data-test='user-quote--delete-quote--delete-quote-button']"
+}
 
-describe("components > QuoteDelete.vue", () => {
-  it("renders quote text", () => {
+describe('components > QuoteDelete.vue', () => {
+  it('renders quote text', () => {
     const wrapper = mount(QuoteDelete, {
-      props: { quote: fakeQuote },
-    });
-    expect(wrapper.find(selectors.quoteText).text()).toContain(fakeQuote.text);
-  });
+      props: { quote: fakeQuote }
+    })
+    expect(wrapper.find(selectors.quoteText).text()).toContain(fakeQuote.text)
+  })
 
-  it("emits cancel create event when clicking on cancel button", () => {
+  it('emits cancel create event when clicking on cancel button', () => {
     const wrapper = mount(QuoteDelete, {
-      props: { quote: fakeQuote },
-    });
-    wrapper.find(selectors.cancelButton).trigger("click");
-    expect(wrapper.emitted()).toHaveProperty("cancelDeleteQuote");
-  });
+      props: { quote: fakeQuote }
+    })
+    wrapper.find(selectors.cancelButton).trigger('click')
+    expect(wrapper.emitted()).toHaveProperty('cancelDeleteQuote')
+  })
 
-  it("emits delete quote event when clicking on delete quote button", async () => {
+  it('emits delete quote event when clicking on delete quote button', async () => {
     const wrapper = mount(QuoteDelete, {
-      props: { quote: fakeQuote },
-    });
-    wrapper.find(selectors.deleteQuoteButton).trigger("click");
-    const deleteQuoteEvent = wrapper.emitted("deleteQuote") as unknown[];
-    expect(deleteQuoteEvent).toBeDefined();
-    expect(deleteQuoteEvent[0]).toEqual([fakeQuote.id]);
-  });
-});
+      props: { quote: fakeQuote }
+    })
+    wrapper.find(selectors.deleteQuoteButton).trigger('click')
+    const deleteQuoteEvent = wrapper.emitted('deleteQuote') as unknown[]
+    expect(deleteQuoteEvent).toBeDefined()
+    expect(deleteQuoteEvent[0]).toEqual([fakeQuote.id])
+  })
+})

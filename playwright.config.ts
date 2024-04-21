@@ -1,5 +1,5 @@
-import type { PlaywrightTestConfig } from "@playwright/test";
-import { devices } from "@playwright/test";
+import type { PlaywrightTestConfig } from '@playwright/test'
+import { devices } from '@playwright/test'
 
 /**
  * Read environment variables from file.
@@ -11,7 +11,7 @@ import { devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-  testDir: "./playwright",
+  testDir: './playwright',
   /* Maximum time one test can run for. */
   timeout: 60 * 1000,
   expect: {
@@ -19,7 +19,7 @@ const config: PlaywrightTestConfig = {
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 5000,
+    timeout: 5000
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -32,19 +32,19 @@ const config: PlaywrightTestConfig = {
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     [
-      "html",
+      'html',
       {
         // open: "never",
-      },
+      }
     ],
-    ["line"],
+    ['line'],
     // ["./playwright/custom-reporter/step-reporter.ts"],
     [
-      "allure-playwright",
+      'allure-playwright',
       {
-        outputFolder: "playwright/allure-results",
-      },
-    ],
+        outputFolder: 'playwright/allure-results'
+      }
+    ]
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -53,16 +53,16 @@ const config: PlaywrightTestConfig = {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.PLAYWRIGHT_BASE_URL
       ? process.env.PLAYWRIGHT_BASE_URL
-      : "http://localhost:5173",
+      : 'http://localhost:5173',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: 'on-first-retry'
 
     /* Capture screenshot when test fails. See https://playwright.dev/docs/test-configuration#automatic-screenshots */
     // screenshot: "only-on-failure",
 
-    /* Only on CI systems run the tests headless */
-    headless: !!process.env.CI,
+    // /* Only on CI systems run the tests headless */
+    // headless: !!process.env.CI
 
     // launchOptions: {
     //   slowMo: 100,
@@ -72,15 +72,15 @@ const config: PlaywrightTestConfig = {
   /* Configure projects for major browsers */
   projects: [
     {
-      name: "chromium",
+      name: 'chromium',
       use: {
-        ...devices["Desktop Chrome"],
+        ...devices['Desktop Chrome']
         // viewport: null,
         // launchOptions: {
         //   args: ["--start-maximized"],
         // },
-      },
-    },
+      }
+    }
 
     // {
     //   name: "firefox",
@@ -120,7 +120,7 @@ const config: PlaywrightTestConfig = {
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  outputDir: "playwright/test-results/",
+  outputDir: 'playwright/test-results/',
 
   /* Run your local dev server before starting the tests */
   webServer: process.env.BASE_URL
@@ -131,10 +131,10 @@ const config: PlaywrightTestConfig = {
          * Use the preview server on CI for more realistic testing.
         Playwright will re-use the local server if there is already a dev-server running.
         */
-        command: process.env.CI ? "vite preview --port 5173" : "vite dev",
+        command: process.env.CI ? 'vite preview --port 5173' : 'vite dev',
         port: 5173,
-        reuseExistingServer: !process.env.CI,
-      },
-};
+        reuseExistingServer: !process.env.CI
+      }
+}
 
-export default config;
+export default config

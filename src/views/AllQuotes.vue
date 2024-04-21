@@ -18,18 +18,18 @@
 </template>
 
 <script setup lang="ts">
-import QuoteTile from "@/components/Quotes/QuoteTile.vue";
-import { useQuotesStore } from "@/store/quotes";
+import QuoteTile from '@/components/Quotes/QuoteTile.vue'
+import { useQuotesStore } from '@/store/quotes'
 
-const quotesStore = useQuotesStore();
+const quotesStore = useQuotesStore()
 
-quotesStore.getQuotes();
+quotesStore.getQuotes()
 
 // Like unlike quote
 async function likeQuote(quoteId: number) {
-  await quotesStore.likeQuote(quoteId);
+  await quotesStore.likeQuote(quoteId)
 }
 async function unlikeQuote(quoteId: number) {
-  await quotesStore.unlikeQuote(quoteId);
+  await quotesStore.unlikeQuote(quoteId)
 }
 </script>
