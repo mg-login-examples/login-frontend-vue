@@ -56,5 +56,5 @@ jobs:
         run: echo "password_2" > backend/docker_secrets/mongo_pwd.txt
       - name: Add redis password text file for a test redis container
         run: echo "password_3" > backend/docker_secrets/redis_pwd.txt
-      - name: Run cypress e2e tests
+      - name: Run playwright e2e tests
         run: ./scripts_docker.sh run-e2e-tests-playwright

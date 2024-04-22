@@ -13,4 +13,4 @@ COPY . .
 
 RUN pnpm playwright install --with-deps
 
-CMD [ "npm", "run", "test-e2e-playwright"]
+CMD [ "pnpm", "run", "test-e2e-playwright"]

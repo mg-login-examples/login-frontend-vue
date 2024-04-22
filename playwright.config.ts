@@ -34,7 +34,7 @@ const config: PlaywrightTestConfig = {
     [
       'html',
       {
-        // open: "never",
+        open: 'never'
       }
     ],
     ['line'],
@@ -120,21 +120,21 @@ const config: PlaywrightTestConfig = {
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  outputDir: 'playwright/test-results/',
+  outputDir: 'playwright/test-results/'
 
   /* Run your local dev server before starting the tests */
-  webServer: process.env.BASE_URL
-    ? undefined
-    : {
-        /**
-         * Use the dev server by default for faster feedback loop.
-         * Use the preview server on CI for more realistic testing.
-        Playwright will re-use the local server if there is already a dev-server running.
-        */
-        command: process.env.CI ? 'vite preview --port 5173' : 'vite dev',
-        port: 5173,
-        reuseExistingServer: !process.env.CI
-      }
+  // webServer: process.env.BASE_URL
+  //   ? undefined
+  //   : {
+  //       /**
+  //        * Use the dev server by default for faster feedback loop.
+  //        * Use the preview server on CI for more realistic testing.
+  //       Playwright will re-use the local server if there is already a dev-server running.
+  //       */
+  //       command: process.env.CI ? 'vite preview --port 5173' : 'vite dev',
+  //       port: 5173,
+  //       reuseExistingServer: !process.env.CI
+  //     }
 }
 
 export default config
