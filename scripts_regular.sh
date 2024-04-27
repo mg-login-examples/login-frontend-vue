@@ -5,7 +5,10 @@ then
   cd frontend
   pnpm i
   test_case=${2:-launch}
-  if [ $test_case = "build-dev" ]
+  if [ $test_case = "launch" ]
+  then
+    FINAL_COMMAND="pnpm dev"
+  elif [ $test_case = "build-dev" ]
   then
     FINAL_COMMAND="pnpm run build-dev"
   elif [ $test_case = "build-prod" ]
@@ -24,14 +27,19 @@ then
   then
     FINAL_COMMAND="pnpm run type-check"
   elif [ $test_case = "e2e-tests-cypress" ]
+  then
     FINAL_COMMAND="pnpm run test-e2e-cypress"
   elif [ $test_case = "e2e-tests-cypress-ui" ]
+  then
     FINAL_COMMAND="pnpm run test-e2e-cypress-ui"
   elif [ $test_case = "e2e-tests-playwright" ]
+  then
     FINAL_COMMAND="pnpm run test-e2e-playwright"
   elif [ $test_case = "e2e-tests-playwright-ui" ]
+  then
     FINAL_COMMAND="pnpm run test-e2e-playwright-ui"
   elif [ $test_case = "e2e-tests-playwright-headed" ]
+  then
     FINAL_COMMAND="pnpm run test-e2e-playwright-headed"
   elif [ $test_case = "custom" ]
   then
