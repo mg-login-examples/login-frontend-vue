@@ -56,8 +56,8 @@ export default defineConfig({
       adminApiUrl: 'http://localhost:8018/api/admin',
       adminApiLoginUsername: 'admin@admin.admin',
       adminApiLoginPassword: 'admin',
-      filterSpecs: true,
-      tags: '@signup'
+      filterSpecs: true
+      // tags: '@signup'
     },
     video: false
     // videoCompression: false,
