@@ -13,6 +13,8 @@ setup_backend() {
   build_backend_stack_docker_images && run_db_migrations && create_admin_users $1 $2
 }
 
+frontend_options="<option> one of: launch, build-prod, unit-tests, tdd, lint-check, type-check, custom <your_custom_command>"
+
 
 case=${1:-default}
 if [ $case = "launch-app-local" ]
@@ -71,7 +73,7 @@ then
     FINAL_COMMAND=${3}
   else
     echo "Unknown option passed for frontend <option>
-    <option> one of: launch, build-prod, unit-tests, tdd, lint-check, type-check, custom <your_custom_command>
+    $frontend_options
     "
     exit 1
   fi
@@ -158,7 +160,7 @@ else
     - launch-app-local
     - launch-app-local-with-proxy
     - frontend <option>
-      <option> one of: launch, build-prod, unit-tests, tdd, lint-check, type-check
+      $frontend_options
     - launch-frontend-prod
     - run-e2e-tests-cypress
     - run-e2e-tests-playwright

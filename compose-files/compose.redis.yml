@@ -15,11 +15,11 @@ services:
     ports:
       - 6379:6379
     environment:
-      - REDIS_PASS_FILE=/run/secrets/redis-pass
+      - REDIS_PASS_FILE=/run/secrets/redis_pwd
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
     secrets:
-      - redis-pass
+      - redis_pwd
     networks:
       - backend
     volumes:
@@ -29,5 +29,5 @@ volumes:
   redis-data:
 
 secrets:
-  redis-pass:
+  redis_pwd:
     file: backend/docker_secrets/redis_pwd.txt
