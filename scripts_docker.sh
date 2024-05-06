@@ -72,7 +72,7 @@ then
   then
     FINAL_COMMAND=${3}
   else
-    echo "Unknown option passed for frontend <option>
+    echo "Unknown option passed for frontend <option>: $test_case
     $frontend_options
     "
     exit 1
@@ -155,8 +155,8 @@ elif [ $case = "down" ]
 then
    docker_down_all_containers
 else
-  echo "no option passed"
-  echo "available options are:
+  echo "unsupported command passed '$case'"
+  echo "available commands are:
     - launch-app-local
     - launch-app-local-with-proxy
     - frontend <option>

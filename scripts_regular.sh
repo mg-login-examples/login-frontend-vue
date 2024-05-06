@@ -1,4 +1,6 @@
 #!/bin/sh
+frontend_options="<option> one of: launch, build-dev, build-prod, unit-tests, tdd, lint-check, type-check, e2e-tests-cypress, e2e-tests-cypress-ui, e2e-tests-playwright, e2e-tests-playwright-ui, e2e-tests-playwright-headed, custom <your_custom_command>"
+
 case=${1:-default}
 if [ $case = "frontend" ]
 then
@@ -46,15 +48,15 @@ then
     FINAL_COMMAND=${3}
   else
     echo "Unknown option passed for frontend <option>
-    <option> one of: build-dev, build-prod, unit-tests, tdd, lint-check, type-check, e2e-tests-cypress, e2e-tests-cypress-ui, e2e-tests-playwright, e2e-tests-playwright-ui, e2e-tests-playwright-headed, custom <your_custom_command>
+    $frontend_options
     "
     exit 1
   fi
   $FINAL_COMMAND
 else
-  echo "no option passed"
-  echo "available options are:
+  echo "unsupported command passed '$case'"
+  echo "available commands are:
   - frontend <option>
-    <option> one of: build-dev, build-prod, unit-tests, tdd, lint-check, type-check
+    $frontend_options
   "
 fi
